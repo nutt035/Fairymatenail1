@@ -6,9 +6,9 @@ import { LayoutDashboard, CalendarClock, Receipt, User, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
-  { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/queues', label: 'Queue Management', icon: CalendarClock },
-  { href: '/admin/receipts', label: 'Receipts History', icon: Receipt },
+  { href: '/admin/dashboard', label: 'แดชบอร์ด', icon: LayoutDashboard },
+  { href: '/admin/queues', label: 'หน้าจัดการคิว', icon: CalendarClock },
+  { href: '/admin/receipts', label: 'ใบเสร็จย้อนหลัง', icon: Receipt },
 ];
 
 interface SidebarProps {
@@ -79,7 +79,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="p-4 border-t border-slate-100">
           <Link href="/booking" target="_blank" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-slate-50 transition-colors">
               <User size={20} />
-              <span className="text-sm">Customer View</span>
+              <span className="text-sm">หน้าลูกค้าดูคิว</span>
           </Link>
         </div>
       </aside>

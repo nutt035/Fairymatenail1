@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import DateCarousel from '@/components/DateCarousel';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { supabase } from '@/lib/supabase';
-import { Plus, X, Edit, CheckCircle, AlertCircle } from 'lucide-react';
+import { Plus, X, Edit, CheckCircle, AlertCircle, Trash2 } from 'lucide-react'; // เพิ่ม Trash2
 import { formatCurrency } from '@/lib/utils';
 
 // Types
@@ -111,6 +111,25 @@ export default function QueueManagement() {
     setIsFinishModalOpen(true);
   };
 
+  // --- ฟังก์ชันลบข้อมูล (เพิ่มใหม่) ---
+  const handleDelete = async () => {
+    if (!editingQueue) return;
+
+    // ถามยืนยันก่อนลบ
+    const isConfirmed = confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบคิวของ "${editingQueue.customer_name}"? \nการกระทำนี้ไม่สามารถย้อนกลับได้`);
+    
+    if (isConfirmed) {
+      const { error } = await supabase.from('queues').delete().eq('id', editingQueue.id);
+      
+      if (error) {
+        setError('ไม่สามารถลบข้อมูลได้: ' + error.message);
+      } else {
+        setIsModalOpen(false); // ปิด Modal
+        fetchQueues(); // โหลดข้อมูลใหม่
+      }
+    }
+  };
+
   // Submit Add/Edit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,7 +183,7 @@ export default function QueueManagement() {
       service_name: queue.service_name,
       original_price: queue.price,
       discount,
-      finalPrice,
+      final_price: finalPrice, // แก้ไขชื่อ field ให้ตรงกับ DB (บางทีอาจเป็น final_price หรือ finalPrice แล้วแต่ setup)
       invoice_no: `INV-${Date.now().toString().slice(-6)}`
     }]);
 
@@ -393,13 +412,28 @@ export default function QueueManagement() {
                 </div>
               )}
 
-              {/* Submit */}
-              <button
-                type="submit"
-                className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 mt-2"
-              >
-                บันทึกข้อมูล
-              </button>
+              {/* Button Group (แก้ไขส่วนนี้เพื่อเพิ่มปุ่มลบ) */}
+              <div className="flex gap-3 mt-4 pt-2">
+                {/* ปุ่มลบ (แสดงเฉพาะตอนแก้ไข) */}
+                {editingQueue && (
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="px-4 py-3 bg-red-50 text-red-500 rounded-xl font-bold hover:bg-red-100 transition-colors flex items-center justify-center"
+                    title="ลบคิวนี้"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                )}
+                
+                <button
+                  type="submit"
+                  className="flex-1 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90"
+                >
+                  บันทึกข้อมูล
+                </button>
+              </div>
+
             </form>
           </div>
         </div>
