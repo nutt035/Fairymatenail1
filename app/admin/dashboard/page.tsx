@@ -110,7 +110,7 @@ export default function Dashboard() {
       {/* Left Column - Queue List */}
       <div className="col-span-1 lg:col-span-7 space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Dashboard</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-800">แดชบอร์ด</h1>
             <span className="bg-white border border-pink-100 text-primary px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">
                 {format(new Date(), 'd MMMM yyyy')}
             </span>
@@ -122,13 +122,13 @@ export default function Dashboard() {
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <Clock size={16} className="text-primary" />
                     </div>
-                    <h2 className="font-bold text-base md:text-lg">Today's Queue ({queues.length})</h2>
+                    <h2 className="font-bold text-base md:text-lg">คิววันนี้ ({queues.length})</h2>
                 </div>
                 <Link 
                     href="/admin/queues" 
                     className="text-sm text-primary font-medium hover:underline hover:text-primary/80"
                 >
-                    View All
+                    ดูทั้งหมด
                 </Link>
             </div>
 
@@ -153,7 +153,7 @@ export default function Dashboard() {
                         </div>
                     )
                 })}
-                {!loading && queues.length === 0 && <p className="text-center text-slate-400 mt-10">No queues for today</p>}
+                {!loading && queues.length === 0 && <p className="text-center text-slate-400 mt-10">ไม่มีคิวสำหรับวันนี้</p>}
             </div>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function Dashboard() {
                     <Receipt size={24} />
                 </div>
                 <div>
-                    <p className="text-xs text-slate-400 font-bold tracking-wider uppercase">Today's Income</p>
+                    <p className="text-xs text-slate-400 font-bold tracking-wider uppercase">รายได้วันนี้</p>
                     <p className="text-3xl font-bold text-slate-800">
                         {loading ? "..." : formatCurrency(todayIncome)}
                     </p>
@@ -179,7 +179,7 @@ export default function Dashboard() {
          <div className="bg-primary text-white rounded-[20px] p-8 shadow-lg shadow-primary/30 relative overflow-hidden transition-all">
              <div className="relative z-10">
                 <div className="flex justify-between items-start">
-                    <p className="text-white/80 text-xs font-bold tracking-wider uppercase mb-2">Monthly Goal</p>
+                    <p className="text-white/80 text-xs font-bold tracking-wider uppercase mb-2">เป้าหมายเดือนนี้</p>
                     
                     {/* Edit Button */}
                     {!isEditingGoal ? (

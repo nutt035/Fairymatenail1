@@ -66,15 +66,15 @@ export default function ReceiptsPage() {
       {/* List Column */}
       <div className="w-full lg:w-1/3 bg-white rounded-[20px] shadow-soft flex flex-col overflow-hidden min-h-[300px] lg:min-h-0">
         <div className="p-6 border-b border-slate-50">
-            <h2 className="text-xl font-bold text-slate-800">Receipts History</h2>
-            <p className="text-sm text-slate-400">All Transactions ({receipts.length})</p>
+            <h2 className="text-xl font-bold text-slate-800">ใบเสร็จย้อนหลัง</h2>
+            <p className="text-sm text-slate-400">ใบเสร็จทั้งหมด ({receipts.length})</p>
         </div>
         
         <div className="overflow-y-auto flex-1 max-h-[400px] lg:max-h-none custom-scroll">
             {receipts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-40 text-slate-400">
                     <FileText size={32} className="mb-2 opacity-20" />
-                    <p>No receipts found</p>
+                    <p>ไม่มีใบเสร็จ</p>
                 </div>
             ) : (
                 receipts.map((receipt) => (
@@ -119,10 +119,10 @@ export default function ReceiptsPage() {
                                 <Sparkles size={18} className="fill-current" />
                                 <h1 className="text-2xl font-bold tracking-tight">Fairymate</h1>
                             </div>
-                            <p className="text-xs text-slate-400 tracking-[0.2em] uppercase pl-7">Nail Studio</p>
+                            <p className="text-xs text-slate-400 tracking-[0.2em] uppercase pl-7">Nail</p>
                         </div>
                         <div className="text-left md:text-right">
-                            <h2 className="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">INVOICE</h2>
+                            <h2 className="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">ใบเสร็จ</h2>
                             <p className="text-slate-400 text-sm mt-1">{selectedReceipt.invoice_no}</p>
                         </div>
                     </div>
@@ -130,11 +130,11 @@ export default function ReceiptsPage() {
                     {/* Customer Info */}
                     <div className="flex flex-row justify-between mb-8 md:mb-12 border-b border-dashed border-slate-200 pb-8">
                         <div>
-                            <p className="text-xs text-slate-400 uppercase mb-1">Customer</p>
+                            <p className="text-xs text-slate-400 uppercase mb-1">ลูกค้า</p>
                             <p className="font-bold text-lg text-slate-800">{selectedReceipt.customer_name}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-xs text-slate-400 uppercase mb-1">Date</p>
+                            <p className="text-xs text-slate-400 uppercase mb-1">วันที่</p>
                             <p className="font-medium text-slate-800">
                                 {format(new Date(selectedReceipt.created_at), 'dd MMM yyyy, HH:mm')}
                             </p>
@@ -152,7 +152,7 @@ export default function ReceiptsPage() {
                         {/* Discount Item (Show only if discount > 0) */}
                         {selectedReceipt.discount > 0 && (
                             <div className="flex justify-between items-center text-sm text-green-600">
-                                <span className="font-medium">Discount</span>
+                                <span className="font-medium">ส่วนลด</span>
                                 <span className="font-bold">- {formatCurrency(selectedReceipt.discount)}</span>
                             </div>
                         )}
@@ -161,7 +161,7 @@ export default function ReceiptsPage() {
                     {/* Total Section */}
                     <div className="border-t border-slate-100 pt-6 mt-6">
                         <div className="flex justify-between items-center mb-8">
-                            <span className="text-xl font-bold text-slate-800">Total</span>
+                            <span className="text-xl font-bold text-slate-800">รวมทั้งหมด</span>
                             <span className="text-2xl font-bold text-primary">
                                 {formatCurrency(selectedReceipt.final_price)}
                             </span>
@@ -172,7 +172,7 @@ export default function ReceiptsPage() {
                                 onClick={() => window.print()} // Simple print trigger
                                 className="w-full md:w-auto bg-[#1e293b] text-white px-8 py-3 rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200"
                             >
-                                <Printer size={18} /> Reprint Invoice
+                                <Printer size={18} /> ปริ้นใบเสร็จ
                             </button>
                         </div>
                     </div>
@@ -181,7 +181,7 @@ export default function ReceiptsPage() {
         ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-slate-300">
                 <FileText size={48} className="mb-4 opacity-20" />
-                <p>Select a receipt to view details</p>
+                <p>เลือกใบเสร็จสำหรับดูรายละเอียดใบเสร็จ</p>
             </div>
         )}
       </div>
