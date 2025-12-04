@@ -8,37 +8,48 @@ import { Clock, Receipt, Edit2, Check, X, Loader2 } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
 
 export default function Dashboard() {
-  // Data States
+  // Queue + Income States
   const [queues, setQueues] = useState<any[]>([]);
   const [todayIncome, setTodayIncome] = useState(0);
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [goalAmount, setGoalAmount] = useState(150000);
   const [goalId, setGoalId] = useState<string | null>(null);
-  
+
   // UI States
   const [loading, setLoading] = useState(true);
   const [isEditingGoal, setIsEditingGoal] = useState(false);
   const [tempGoal, setTempGoal] = useState("");
 
+  // Store Hours States
+  const [storeHours, setStoreHours] = useState<any[]>([]);
+  const [loadingStoreHours, setLoadingStoreHours] = useState(true);
+
+  const weekdayNames = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
+
   useEffect(() => {
     fetchDashboardData();
+    fetchStoreHours();
   }, []);
 
+  // -----------------------------
+  // Fetch Dashboard Data
+  // -----------------------------
   const fetchDashboardData = async () => {
     try {
       const today = new Date().toISOString().split('T')[0];
       const startMonth = startOfMonth(new Date()).toISOString();
       const endMonth = endOfMonth(new Date()).toISOString();
 
-      // 1. Fetch Today's Queues
+      // 1. Today's Queues
       const { data: queueData } = await supabase
         .from('queues')
         .select('*')
         .eq('date', today)
         .order('start_time');
+
       if (queueData) setQueues(queueData);
 
-      // 2. Fetch Today's Income (จากตาราง receipts)
+      // 2. Today's Income
       const { data: todayReceipts } = await supabase
         .from('receipts')
         .select('final_price')
@@ -48,7 +59,7 @@ export default function Dashboard() {
       const todayTotal = todayReceipts?.reduce((sum, r) => sum + r.final_price, 0) || 0;
       setTodayIncome(todayTotal);
 
-      // 3. Fetch Monthly Income (จากตาราง receipts)
+      // 3. Monthly Income
       const { data: monthReceipts } = await supabase
         .from('receipts')
         .select('final_price')
@@ -58,7 +69,7 @@ export default function Dashboard() {
       const monthTotal = monthReceipts?.reduce((sum, r) => sum + r.final_price, 0) || 0;
       setMonthlyIncome(monthTotal);
 
-      // 4. Fetch Goal Target
+      // 4. Goal
       const { data: goalData } = await supabase
         .from('goals')
         .select('*')
@@ -77,16 +88,75 @@ export default function Dashboard() {
     }
   };
 
+  // -----------------------------
+  // Fetch Store Hours
+  // -----------------------------
+  const fetchStoreHours = async () => {
+    try {
+      const { data } = await supabase
+        .from("store_hours")
+        .select("*")
+        .order("weekday");
+
+      if (data) setStoreHours(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingStoreHours(false);
+    }
+  };
+
+  // -----------------------------
+  // Store Hours Handlers
+  // -----------------------------
+  const updateLocalTime = (weekday: number, field: string, value: string) => {
+    setStoreHours((prev) =>
+      prev.map((d) =>
+        d.weekday === weekday ? { ...d, [field]: value } : d
+      )
+    );
+  };
+
+  const toggleClosed = (weekday: number) => {
+    setStoreHours((prev) =>
+      prev.map((d) =>
+        d.weekday === weekday
+          ? { ...d, is_closed: !d.is_closed }
+          : d
+      )
+    );
+  };
+
+  const saveStoreHours = async () => {
+    try {
+      for (const day of storeHours) {
+        await supabase
+          .from("store_hours")
+          .update({
+            open_time: day.open_time,
+            close_time: day.close_time,
+            is_closed: day.is_closed,
+          })
+          .eq("weekday", day.weekday);
+      }
+      alert("บันทึกเวลาเปิดร้านเรียบร้อยแล้ว!");
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาด");
+    }
+  };
+
+  // -----------------------------
+  // Save Goal
+  // -----------------------------
   const handleSaveGoal = async () => {
     const newAmount = parseInt(tempGoal);
     if (isNaN(newAmount) || newAmount <= 0) return;
 
     try {
       if (goalId) {
-        // Update existing
         await supabase.from('goals').update({ amount: newAmount }).eq('id', goalId);
       } else {
-        // Create new if not exists (fallback)
         await supabase.from('goals').insert([{ amount: newAmount }]);
       }
       setGoalAmount(newAmount);
@@ -102,12 +172,13 @@ export default function Dashboard() {
     setIsEditingGoal(true);
   };
 
-  // Calculate Percentage
+  // Progress
   const progressPercent = Math.min(100, Math.round((monthlyIncome / goalAmount) * 100));
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
-      {/* Left Column - Queue List */}
+
+      {/* LEFT COLUMN — QUEUE LIST */}
       <div className="col-span-1 lg:col-span-7 space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <h1 className="text-2xl md:text-3xl font-bold text-slate-800">แดชบอร์ด</h1>
@@ -158,9 +229,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Right Column - Stats */}
+      {/* RIGHT COLUMN — STATS + STORE HOURS */}
       <div className="col-span-1 lg:col-span-5 space-y-6 pt-0 lg:pt-16">
-         {/* Income Card */}
+
+         {/* Today Income */}
          <div className="bg-white rounded-[20px] p-6 shadow-soft">
             <div className="flex items-center gap-4 mb-4">
                 <div className="p-3 bg-pink-50 rounded-2xl text-primary">
@@ -175,15 +247,14 @@ export default function Dashboard() {
             </div>
          </div>
 
-         {/* Editable Goal Card */}
-         <div className="bg-primary text-white rounded-[20px] p-8 shadow-lg shadow-primary/30 relative overflow-hidden transition-all">
+         {/* Monthly Goal */}
+         <div className="bg-primary text-white rounded-[20px] p-8 shadow-lg shadow-primary/30 relative overflow-hidden">
              <div className="relative z-10">
                 <div className="flex justify-between items-start">
                     <p className="text-white/80 text-xs font-bold tracking-wider uppercase mb-2">เป้าหมายเดือนนี้</p>
                     
-                    {/* Edit Button */}
                     {!isEditingGoal ? (
-                        <button onClick={startEditing} className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-white/80 hover:text-white">
+                        <button onClick={startEditing} className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white/80 hover:text-white">
                             <Edit2 size={14} />
                         </button>
                     ) : (
@@ -202,17 +273,15 @@ export default function Dashboard() {
                     <span className="text-3xl md:text-4xl font-bold">
                         {loading ? "..." : formatCurrency(monthlyIncome)}
                     </span>
-                    
-                    {/* Editable Target Area */}
+
                     <span className="text-white/60 mb-1 text-sm md:text-base flex items-center gap-1">
-                        / 
+                        /
                         {isEditingGoal ? (
                              <input 
                                 type="number" 
-                                autoFocus
                                 value={tempGoal}
                                 onChange={(e) => setTempGoal(e.target.value)}
-                                className="w-24 bg-white/20 border-b border-white text-white px-1 py-0.5 focus:outline-none focus:bg-white/30 rounded-sm font-bold"
+                                className="w-24 bg-white/20 border-b border-white text-white px-1 py-0.5 font-bold"
                              />
                         ) : (
                             <span>{loading ? "..." : (goalAmount / 1000).toFixed(0) + 'k'}</span>
@@ -220,20 +289,83 @@ export default function Dashboard() {
                     </span>
                 </div>
 
-                {/* Progress Bar */}
                 <div className="h-2 bg-black/20 rounded-full overflow-hidden mb-4">
                     <div 
-                        className="h-full bg-white rounded-full transition-all duration-1000 ease-out" 
+                        className="h-full bg-white rounded-full transition-all duration-700" 
                         style={{ width: `${progressPercent}%` }}
                     ></div>
                 </div>
              </div>
              
-             {/* Big Percentage Background */}
-             <div className="absolute right-6 top-1/2 -translate-y-1/2 text-7xl md:text-8xl font-bold text-white/10 select-none pointer-events-none">
+             <div className="absolute right-6 top-1/2 -translate-y-1/2 text-7xl md:text-8xl font-bold text-white/10 select-none">
                  {progressPercent}%
              </div>
          </div>
+
+         {/* STORE HOURS CARD */}
+         <div className="bg-white rounded-[20px] p-6 shadow-soft">
+            <h2 className="font-bold text-lg mb-4">ตั้งเวลาเปิด–ปิดร้าน</h2>
+
+            {loadingStoreHours ? (
+                <div className="flex justify-center py-6">
+                    <Loader2 className="animate-spin text-primary" />
+                </div>
+            ) : (
+                <div className="space-y-4">
+                    {storeHours.map((day) => (
+                        <div key={day.weekday} className="flex items-center gap-3">
+                            <span className="w-20 text-slate-600 font-medium">
+                                {weekdayNames[day.weekday]}
+                            </span>
+
+                            {day.is_closed ? (
+                                <span className="text-slate-400 italic">ปิดร้านทั้งวัน</span>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="time"
+                                        value={day.open_time || ""}
+                                        onChange={(e) =>
+                                            updateLocalTime(day.weekday, "open_time", e.target.value)
+                                        }
+                                        className="border rounded-lg px-2 py-1 text-sm"
+                                    />
+                                    <span className="text-slate-400">–</span>
+                                    <input
+                                        type="time"
+                                        value={day.close_time || ""}
+                                        onChange={(e) =>
+                                            updateLocalTime(day.weekday, "close_time", e.target.value)
+                                        }
+                                        className="border rounded-lg px-2 py-1 text-sm"
+                                    />
+                                </div>
+                            )}
+
+                            <button
+                                onClick={() => toggleClosed(day.weekday)}
+                                className={cn(
+                                    "px-3 py-1 rounded-lg text-sm",
+                                    day.is_closed
+                                        ? "bg-primary text-white"
+                                        : "bg-slate-100 text-slate-600"
+                                )}
+                            >
+                                {day.is_closed ? "เปิดร้าน" : "ปิดร้าน"}
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            <button
+                onClick={saveStoreHours}
+                className="mt-6 w-full bg-primary text-white py-2 rounded-lg font-bold shadow hover:bg-primary/90"
+            >
+                บันทึกเวลาเปิด–ปิดร้าน
+            </button>
+         </div>
+
       </div>
     </div>
   );
