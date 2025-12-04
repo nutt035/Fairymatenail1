@@ -18,15 +18,31 @@ export default function BookingPage() {
   const [slots, setSlots] = useState<Slot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // base 30-minute slots
+  // 30-minute slots
   const baseSlots = [
-    "13:00","13:30","14:00","14:30","15:00","15:30",
-    "16:00","16:30","17:00","17:30","18:00","18:30",
-    "19:00","19:30","20:00","20:30","21:00","21:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
+    "20:00",
+    "20:30",
+    "21:00",
+    "21:30",
   ];
 
-  const hourLabels = ["13","14","15","16","17","18","19","20","21","22"];
+  const hourLabels = ["13", "14", "15", "16", "17", "18", "19", "20", "21", "22"];
 
+  // "HH:MM" → 13.5 แบบนี้
   const timeToFloat = (t: string | null): number | null => {
     if (!t) return null;
     const [h, m] = t.split(":").map(Number);
@@ -36,28 +52,28 @@ export default function BookingPage() {
   useEffect(() => {
     const fetchAvailability = async () => {
       setIsLoading(true);
-
       const dateStr = selectedDate.toISOString().split("T")[0];
       const weekday = selectedDate.getDay();
 
       try {
-        // 1) Daily special hours
+        // 1) ดีฟอลต์ก่อนเลย ถ้า DB ว่างจะใช้ค่านี้
+        let openTime: string | null = "13:00";
+        let closeTime: string | null = "22:00";
+        let isClosed = false;
+
+        // 2) ลองหา exception ของวันนั้น
         const { data: exception } = await supabase
           .from("store_exceptions")
           .select("*")
           .eq("date", dateStr)
           .maybeSingle();
 
-        let openTime: string | null = null;
-        let closeTime: string | null = null;
-        let isClosed = false;
-
         if (exception) {
-          openTime = exception.open_time;
-          closeTime = exception.close_time;
+          openTime = exception.open_time ?? openTime;
+          closeTime = exception.close_time ?? closeTime;
           isClosed = exception.is_closed;
         } else {
-          // 2) Weekly hours
+          // 3) ถ้าไม่มี exception ใช้ weekly hours ถ้ามี
           const { data: hour } = await supabase
             .from("store_hours")
             .select("*")
@@ -65,13 +81,13 @@ export default function BookingPage() {
             .maybeSingle();
 
           if (hour) {
-            openTime = hour.open_time;
-            closeTime = hour.close_time;
+            openTime = hour.open_time ?? openTime;
+            closeTime = hour.close_time ?? closeTime;
             isClosed = hour.is_closed;
           }
         }
 
-        // 3) Queue of the day
+        // 4) ดึงคิวของวันนั้น
         const { data: bookings } = await supabase
           .from("queues")
           .select("start_time, end_time, status")
@@ -86,12 +102,22 @@ export default function BookingPage() {
           const slotStart = h + m / 60;
           const slotEnd = slotStart + 0.5;
 
-          if (isClosed) return { time: slotTime, status: "CLOSED" };
-          if (open === null || close === null) return { time: slotTime, status: "UNAVAILABLE" };
+          // ปิดทั้งวัน
+          if (isClosed) {
+            return { time: slotTime, status: "CLOSED" };
+          }
 
-          if (slotStart < open || slotEnd > close)
+          // กัน null เผื่อไว้ แต่ไม่น่ามีแล้ว
+          if (open === null || close === null) {
             return { time: slotTime, status: "UNAVAILABLE" };
+          }
 
+          // นอกช่วงเวลาเปิดร้าน
+          if (slotStart < open || slotEnd > close) {
+            return { time: slotTime, status: "UNAVAILABLE" };
+          }
+
+          // คิวทับ slot อยู่ไหม
           const hasBooking = bookings?.some((b) => {
             const bStart = timeToFloat(b.start_time)!;
             const bEnd = timeToFloat(b.end_time)!;
@@ -100,6 +126,7 @@ export default function BookingPage() {
 
           if (hasBooking) return { time: slotTime, status: "FULL" };
 
+          // กันเวลาที่ "เริ่มไม่ได้" ก่อนคิวถัดไป (เหลือไม่ถึง 1 ชม.)
           const nextBooking = bookings
             ?.map((b) => ({
               start: timeToFloat(b.start_time)!,
@@ -110,15 +137,17 @@ export default function BookingPage() {
 
           if (nextBooking) {
             const remain = nextBooking.start - slotStart;
-            if (remain < 1) return { time: slotTime, status: "UNAVAILABLE" };
+            if (remain < 1) {
+              return { time: slotTime, status: "UNAVAILABLE" };
+            }
           }
 
           return { time: slotTime, status: "OPEN" };
         });
 
         setSlots(newSlots);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
@@ -131,7 +160,7 @@ export default function BookingPage() {
     if (status === "OPEN") return "bg-emerald-400/90";
     if (status === "FULL") return "bg-pink-500";
     if (status === "CLOSED") return "bg-slate-200";
-    return "bg-slate-100";
+    return "bg-slate-100"; // UNAVAILABLE
   };
 
   const slotOpacityClass = (status: SlotStatus) => {
@@ -156,7 +185,7 @@ export default function BookingPage() {
       </header>
 
       <main className="max-w-md mx-auto p-6 space-y-6 pb-40">
-        {/* INFO */}
+        {/* INFO CARD */}
         <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 text-center shadow-sm">
           <h2 className="text-xl font-bold text-slate-800 mb-2">ตารางคิวว่าง</h2>
           <p className="text-slate-500 text-sm">
@@ -164,12 +193,15 @@ export default function BookingPage() {
           </p>
         </div>
 
-        {/* DATE */}
+        {/* DATE SELECTOR */}
         <div className="bg-white rounded-3xl p-6 shadow-soft">
-          <DateCarousel selectedDate={selectedDate} onDateSelect={setSelectedDate} />
+          <DateCarousel
+            selectedDate={selectedDate}
+            onDateSelect={setSelectedDate}
+          />
         </div>
 
-        {/* TIMELINE */}
+        {/* TIMELINE BAR */}
         <div className="bg-white rounded-3xl p-6 shadow-soft space-y-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-bold text-slate-800 text-sm">
@@ -189,21 +221,25 @@ export default function BookingPage() {
           </div>
 
           {isLoading ? (
-            <p className="text-center text-slate-400 py-6 text-sm">กำลังโหลดข้อมูลคิว...</p>
+            <p className="text-center text-slate-400 py-6 text-sm">
+              กำลังโหลดข้อมูลคิว...
+            </p>
           ) : (
             <div className="space-y-2">
-              
               {/* เวลาแถวบน */}
               <div className="flex justify-between text-[10px] text-slate-400 px-1">
                 {hourLabels.map((h) => (
-                  <span key={"top-" + h} className="min-w-[20px] text-center">
+                  <span
+                    key={"top-" + h}
+                    className="min-w-[20px] text-center"
+                  >
                     {h}:00
                   </span>
                 ))}
               </div>
 
-              {/* GRID TIMELINE */}
-              <div className="grid grid-cols-18 h-10 bg-slate-100/60 rounded-3xl py-1 gap-1 w-full">
+              {/* แถบ timeline */}
+              <div className="flex h-10 w-full items-stretch rounded-3xl bg-slate-100/60 py-1 gap-1">
                 {slots.map((slot, i) => {
                   const prev = slots[i - 1];
                   const next = slots[i + 1];
@@ -214,7 +250,7 @@ export default function BookingPage() {
                     <div
                       key={slot.time}
                       className={cn(
-                        "flex items-center justify-center text-[11px] font-semibold text-white",
+                        "flex-1 flex items-center justify-center text-[11px] font-semibold text-white",
                         slotBgClass(slot.status),
                         slotOpacityClass(slot.status),
                         "transition-all shadow-sm overflow-hidden",
@@ -231,14 +267,19 @@ export default function BookingPage() {
               {/* เวลาแถวล่าง */}
               <div className="flex justify-between text-[10px] text-slate-400 px-1">
                 {hourLabels.map((h) => (
-                  <span key={"bottom-" + h} className="min-w-[20px] text-center">
+                  <span
+                    key={"bottom-" + h}
+                    className="min-w-[20px] text-center"
+                  >
                     {h}:00
                   </span>
                 ))}
               </div>
 
+              {/* note */}
               <p className="text-[11px] text-slate-400 mt-1">
-                *ช่วงเวลา “เริ่มไม่ได้” คือเวลาที่ใกล้คิวถัดไป ไม่เพียงพอสำหรับเริ่มรับบริการใหม่
+                *ช่วงเวลา “เริ่มไม่ได้” คือเวลาที่ใกล้กับการจองคิวถัดไป
+                ไม่เพียงพอสำหรับเริ่มรับบริการใหม่
               </p>
             </div>
           )}
