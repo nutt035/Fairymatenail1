@@ -5,13 +5,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import StatusBadge from "@/components/ui/StatusBadge";
 import {
-  Clock,
-  Receipt,
-  Edit2,
-  Check,
-  X,
-  Loader2,
-  CalendarDays,
+  Clock, Receipt, Edit2, Check, X, Loader2, CalendarDays,
 } from "lucide-react";
 import { formatCurrency, cn } from "@/lib/utils";
 
