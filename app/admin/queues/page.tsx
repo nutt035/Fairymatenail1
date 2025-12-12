@@ -1,22 +1,12 @@
-"use client";
-import { useState, useEffect, useRef } from 'react';
+'use client';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { formatCurrency, cn } from '@/lib/utils';
-import { 
-  Send, 
-  Loader2, 
-  CalendarDays, 
-  CheckCircle, 
-  X, 
-  Edit2, 
-  Trash2, 
-  Clock,
-  Wallet
-} from 'lucide-react';
-import StatusBadge from '@/components/ui/StatusBadge';
-import DateCarousel from '@/components/DateCarousel';
-import { format, isToday, isTomorrow, parseISO } from 'date-fns';
+import { format, parseISO, isToday } from 'date-fns';
 import { th } from 'date-fns/locale';
+import { CalendarDays, Loader2, CheckCircle, Edit2, Trash2, X, Send } from 'lucide-react';
+import { cn, formatCurrency } from '@/lib/utils';
+import DateCarousel from '@/components/DateCarousel';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 // --- Types ---
 interface Queue {
@@ -34,7 +24,7 @@ interface Queue {
 export default function QueueManagement() {
   const [queues, setQueues] = useState<Queue[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Input & UI States
   const [inputText, setInputText] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -43,7 +33,7 @@ export default function QueueManagement() {
   // Modal States
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingQueue, setEditingQueue] = useState<Queue | null>(null);
-  
+
   // Ref for scrolling
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -77,9 +67,9 @@ export default function QueueManagement() {
     setSelectedDate(date);
     const dateStr = format(date, 'yyyy-MM-dd');
     const element = document.getElementById(`date-section-${dateStr}`);
-    
+
     if (element && listRef.current) {
-      const topPos = element.offsetTop - 10; 
+      const topPos = element.offsetTop - 10;
       listRef.current.scrollTo({
         top: topPos,
         behavior: 'smooth'
@@ -106,8 +96,8 @@ export default function QueueManagement() {
       const day = parseInt(dateMatch[1]);
       const d = new Date();
       d.setDate(day);
-      if (day < now.getDate() && (now.getDate() - day) > 7) { 
-         d.setMonth(d.getMonth() + 1);
+      if (day < now.getDate() && (now.getDate() - day) > 7) {
+        d.setMonth(d.getMonth() + 1);
       }
       targetDate = d.toISOString().split('T')[0];
       serviceName = serviceName.replace(/^(\d{1,2})\s+/, '');
@@ -129,7 +119,7 @@ export default function QueueManagement() {
         const [h, m] = startTime.split(':').map(Number);
         const endD = new Date();
         endD.setHours(h + 1, m);
-        endTime = `${String(endD.getHours()).padStart(2,'0')}:${String(endD.getMinutes()).padStart(2,'0')}`;
+        endTime = `${String(endD.getHours()).padStart(2, '0')}:${String(endD.getMinutes()).padStart(2, '0')}`;
         serviceName = serviceName.replace(singleTimeRegex, '');
       }
     }
@@ -142,7 +132,7 @@ export default function QueueManagement() {
       serviceName = serviceName.replace(priceRegex, '');
     }
 
-    serviceName = serviceName.trim().replace(/^-+|-+$/g, ''); 
+    serviceName = serviceName.trim().replace(/^-+|-+$/g, '');
     if (!serviceName) serviceName = "ลูกค้าทั่วไป";
 
     if (startTime) {
@@ -163,7 +153,7 @@ export default function QueueManagement() {
         alert("บันทึกไม่สำเร็จ: " + error.message);
       }
     } else {
-        alert("ระบุเวลาด้วยครับ (เช่น 13.00)");
+      alert("ระบุเวลาด้วยครับ (เช่น 13.00)");
     }
   };
 
@@ -196,15 +186,15 @@ export default function QueueManagement() {
   return (
     // ⭐ ใช้ h-[100dvh] เพื่อแก้ปัญหาความสูงในมือถือ และ overflow-x-hidden กันจอดิ้น
     <div className="flex flex-col h-[100dvh] w-full max-w-[100vw] overflow-x-hidden bg-[#F8F9FA] relative">
-      
+
       {/* 1. Header + Date Carousel (Fixed Top) */}
       <div className="bg-white shadow-sm z-30 shrink-0 w-full relative">
         {/* Total Money Section (เข้มๆ ใหญ่ๆ) */}
         <div className="px-5 pt-4 pb-2 flex justify-between items-center border-b border-slate-50 bg-white">
           <div>
             <h1 className="text-sm font-bold text-slate-500 flex items-center gap-1 uppercase tracking-wide">
-              <CalendarDays className="text-primary" size={16}/> 
-              ยอดรวม {format(selectedDate, 'd MMM', {locale: th})}
+              <CalendarDays className="text-primary" size={16} />
+              ยอดรวม {format(selectedDate, 'd MMM', { locale: th })}
             </h1>
           </div>
           <div className="text-right">
@@ -217,24 +207,24 @@ export default function QueueManagement() {
             </p>
           </div>
         </div>
-        
+
         {/* Date Carousel */}
         <div className="py-2 w-full overflow-hidden">
-           <DateCarousel 
-             selectedDate={selectedDate} 
-             onDateSelect={handleDateSelect} 
-             className="px-4"
-           />
+          <DateCarousel
+            selectedDate={selectedDate}
+            onDateSelect={handleDateSelect}
+            className="px-4"
+          />
         </div>
       </div>
 
       {/* 2. Scrollable List Area */}
-      <div 
+      <div
         ref={listRef}
         className="flex-1 overflow-y-auto overflow-x-hidden px-4 pt-2 pb-32 space-y-4 w-full bg-[#F8F9FA]"
       >
         {loading ? (
-          <div className="flex justify-center py-10"><Loader2 className="animate-spin text-primary"/></div>
+          <div className="flex justify-center py-10"><Loader2 className="animate-spin text-primary" /></div>
         ) : (
           Object.keys(groupedQueues).map((dateStr) => {
             const dateObj = parseISO(dateStr);
@@ -245,16 +235,16 @@ export default function QueueManagement() {
               <div key={dateStr} id={`date-section-${dateStr}`} className="w-full pt-2">
                 {/* Date Heading */}
                 <div className="flex items-center gap-2 mb-2">
-                   <div className={cn("w-1.5 h-4 rounded-full", isTodayDate ? "bg-primary" : "bg-slate-300")}></div>
-                   <h3 className={cn("text-sm font-bold uppercase", isTodayDate ? "text-primary" : "text-slate-500")}>
-                     {dateLabel} {isTodayDate && "(วันนี้)"}
-                   </h3>
+                  <div className={cn("w-1.5 h-4 rounded-full", isTodayDate ? "bg-primary" : "bg-slate-300")}></div>
+                  <h3 className={cn("text-sm font-bold uppercase", isTodayDate ? "text-primary" : "text-slate-500")}>
+                    {dateLabel} {isTodayDate && "(วันนี้)"}
+                  </h3>
                 </div>
 
                 {/* Queue Cards */}
                 <div className="space-y-2.5 w-full">
                   {groupedQueues[dateStr].map((q) => (
-                    <div 
+                    <div
                       key={q.id}
                       onClick={() => setExpandedId(expandedId === q.id ? null : q.id)}
                       className={cn(
@@ -266,52 +256,52 @@ export default function QueueManagement() {
                       <div className="p-3.5 flex gap-3 items-center">
                         {/* Time */}
                         <div className="flex flex-col items-center justify-center min-w-[50px] bg-slate-50 rounded-lg py-1.5 px-1 border border-slate-100">
-                          <span className="font-black text-slate-700 text-sm leading-none">{q.start_time.slice(0,5)}</span>
-                          <span className="text-[10px] text-slate-400 font-medium mt-1 leading-none">{q.end_time.slice(0,5)}</span>
+                          <span className="font-black text-slate-700 text-sm leading-none">{q.start_time.slice(0, 5)}</span>
+                          <span className="text-[10px] text-slate-400 font-medium mt-1 leading-none">{q.end_time.slice(0, 5)}</span>
                         </div>
 
                         {/* Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
-                             <h4 className={cn("font-bold text-slate-800 text-base truncate", q.status==='finished' && "line-through")}>
-                               {q.customer_name}
-                             </h4>
-                             {q.status === 'finished' && <CheckCircle size={14} className="text-green-500 shrink-0"/>}
+                            <h4 className={cn("font-bold text-slate-800 text-base truncate", q.status === 'finished' && "line-through")}>
+                              {q.customer_name}
+                            </h4>
+                            {q.status === 'finished' && <CheckCircle size={14} className="text-green-500 shrink-0" />}
                           </div>
                           <div className="text-xs text-slate-500 truncate mt-0.5">{q.service_name}</div>
                         </div>
 
                         {/* Price */}
                         <div className="text-right shrink-0">
-                           <div className="font-black text-primary text-lg leading-tight">฿{q.price}</div>
-                           <div className="scale-90 origin-right">
-                              <StatusBadge status={q.status} />
-                           </div>
+                          <div className="font-black text-primary text-lg leading-tight">฿{q.price}</div>
+                          <div className="scale-90 origin-right">
+                            <StatusBadge status={q.status} />
+                          </div>
                         </div>
                       </div>
 
                       {/* Action Panel */}
                       {expandedId === q.id && (
                         <div className="bg-slate-50/80 backdrop-blur-sm p-2 flex justify-end gap-2 border-t border-slate-100 animate-in slide-in-from-top-2">
-                          <button onClick={(e) => { e.stopPropagation(); setEditingQueue(q); setIsEditModalOpen(true); }} 
+                          <button onClick={(e) => { e.stopPropagation(); setEditingQueue(q); setIsEditModalOpen(true); }}
                             className="flex items-center gap-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 shadow-sm">
-                            <Edit2 size={14}/> แก้ไข
+                            <Edit2 size={14} /> แก้ไข
                           </button>
 
-                          <button onClick={(e) => { e.stopPropagation(); handleDelete(q.id); }} 
+                          <button onClick={(e) => { e.stopPropagation(); handleDelete(q.id); }}
                             className="flex items-center gap-1 px-3 py-2 bg-white border border-red-100 rounded-lg text-xs font-bold text-red-500 shadow-sm">
-                            <Trash2 size={14}/> ลบ
+                            <Trash2 size={14} /> ลบ
                           </button>
 
                           {q.status !== 'finished' ? (
-                            <button onClick={(e) => { e.stopPropagation(); handleStatusChange(q.id, 'finished'); }} 
+                            <button onClick={(e) => { e.stopPropagation(); handleStatusChange(q.id, 'finished'); }}
                               className="flex items-center gap-1 px-4 py-2 bg-green-500 text-white rounded-lg text-xs font-bold shadow-md shadow-green-200 ml-auto">
-                              <CheckCircle size={14}/> จบงาน
+                              <CheckCircle size={14} /> จบงาน
                             </button>
                           ) : (
-                            <button onClick={(e) => { e.stopPropagation(); handleStatusChange(q.id, 'pending'); }} 
+                            <button onClick={(e) => { e.stopPropagation(); handleStatusChange(q.id, 'pending'); }}
                               className="flex items-center gap-1 px-4 py-2 bg-slate-200 text-slate-600 rounded-lg text-xs font-bold ml-auto">
-                              <X size={14}/> ยกเลิกจบ
+                              <X size={14} /> ยกเลิกจบ
                             </button>
                           )}
                         </div>
@@ -328,27 +318,27 @@ export default function QueueManagement() {
       {/* 3. Input Bar (Fixed Bottom) */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-100 px-4 py-3 pb-safe w-full max-w-[100vw]">
         <div className="max-w-md mx-auto w-full">
-            <form onSubmit={handleMagicSubmit} className="flex gap-2 items-center">
+          <form onSubmit={handleMagicSubmit} className="flex gap-2 items-center">
             <div className="flex-1 relative">
-                <input
+              <input
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder='เช่น 12.00 ทาสี 500'
                 className="w-full bg-slate-100 text-slate-800 rounded-xl px-4 py-3 text-base focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all placeholder:text-slate-400"
-                />
+              />
             </div>
-            <button 
-                type="submit" 
-                disabled={!inputText.trim()}
-                className="bg-primary text-white w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 disabled:bg-slate-200 disabled:shadow-none transition-all active:scale-95 shrink-0"
+            <button
+              type="submit"
+              disabled={!inputText.trim()}
+              className="bg-primary text-white w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 disabled:bg-slate-200 disabled:shadow-none transition-all active:scale-95 shrink-0"
             >
-                <Send size={20} />
+              <Send size={20} />
             </button>
-            </form>
-            <div className="text-[10px] text-center text-slate-400 mt-2 font-medium">
-                พิมพ์: <b>วันที่(ถ้ามี) เวลา รายการ ราคา</b>
-            </div>
+          </form>
+          <div className="text-[10px] text-center text-slate-400 mt-2 font-medium">
+            พิมพ์: <b>วันที่(ถ้ามี) เวลา รายการ ราคา</b>
+          </div>
         </div>
         {/* Spacer to prevent overlap on iPhone X home bar */}
         <div className="h-1 md:hidden"></div>
@@ -362,54 +352,54 @@ export default function QueueManagement() {
             <div className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-slate-400 uppercase">รายละเอียด</label>
-                <input 
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 outline-none focus:ring-2 focus:ring-primary/30" 
-                  value={editingQueue.customer_name} 
-                  onChange={e => setEditingQueue({...editingQueue, customer_name: e.target.value})}
+                <input
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 outline-none focus:ring-2 focus:ring-primary/30"
+                  value={editingQueue.customer_name}
+                  onChange={e => setEditingQueue({ ...editingQueue, customer_name: e.target.value })}
                 />
               </div>
               <div className="flex gap-3">
                 <div className="flex-1">
-                   <label className="text-xs font-bold text-slate-400 uppercase">เริ่ม</label>
-                   <input 
+                  <label className="text-xs font-bold text-slate-400 uppercase">เริ่ม</label>
+                  <input
                     type="time"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 text-center outline-none focus:ring-2 focus:ring-primary/30" 
-                    value={editingQueue.start_time} 
-                    onChange={e => setEditingQueue({...editingQueue, start_time: e.target.value})}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 text-center outline-none focus:ring-2 focus:ring-primary/30"
+                    value={editingQueue.start_time}
+                    onChange={e => setEditingQueue({ ...editingQueue, start_time: e.target.value })}
                   />
                 </div>
                 <div className="flex-1">
-                   <label className="text-xs font-bold text-slate-400 uppercase">จบ</label>
-                   <input 
+                  <label className="text-xs font-bold text-slate-400 uppercase">จบ</label>
+                  <input
                     type="time"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 text-center outline-none focus:ring-2 focus:ring-primary/30" 
-                    value={editingQueue.end_time} 
-                    onChange={e => setEditingQueue({...editingQueue, end_time: e.target.value})}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 text-center outline-none focus:ring-2 focus:ring-primary/30"
+                    value={editingQueue.end_time}
+                    onChange={e => setEditingQueue({ ...editingQueue, end_time: e.target.value })}
                   />
                 </div>
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-400 uppercase">ราคา</label>
-                <input 
+                <input
                   type="number"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 font-bold text-primary text-lg outline-none focus:ring-2 focus:ring-primary/30" 
-                  value={editingQueue.price} 
-                  onChange={e => setEditingQueue({...editingQueue, price: Number(e.target.value)})}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 font-bold text-primary text-lg outline-none focus:ring-2 focus:ring-primary/30"
+                  value={editingQueue.price}
+                  onChange={e => setEditingQueue({ ...editingQueue, price: Number(e.target.value) })}
                 />
               </div>
             </div>
             <div className="flex gap-3 mt-6">
               <button onClick={() => setIsEditModalOpen(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold">ยกเลิก</button>
-              <button 
+              <button
                 onClick={async () => {
-                   await supabase.from('queues').update({
-                     customer_name: editingQueue.customer_name,
-                     start_time: editingQueue.start_time,
-                     end_time: editingQueue.end_time,
-                     price: editingQueue.price
-                   }).eq('id', editingQueue.id);
-                   fetchQueues();
-                   setIsEditModalOpen(false);
+                  await supabase.from('queues').update({
+                    customer_name: editingQueue.customer_name,
+                    start_time: editingQueue.start_time,
+                    end_time: editingQueue.end_time,
+                    price: editingQueue.price
+                  }).eq('id', editingQueue.id);
+                  fetchQueues();
+                  setIsEditModalOpen(false);
                 }}
                 className="flex-1 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20"
               >บันทึก</button>

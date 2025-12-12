@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Facebook } from "lucide-react";
+import { Facebook, Calendar, Clock } from "lucide-react";
 import DateCarousel from "@/components/DateCarousel";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import { format, getDay, addDays, isPast, isSameDay } from 'date-fns';
 
 type SlotStatus = "OPEN" | "FULL" | "UNAVAILABLE" | "CLOSED";
 
@@ -13,20 +14,22 @@ type Slot = {
   status: SlotStatus;
 };
 
+type AvailabilityMap = Record<string, 'OPEN' | 'FULL' | 'CLOSED' | 'NONE'>;
+
+
 export default function BookingPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [slots, setSlots] = useState<Slot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [availabilityMap, setAvailabilityMap] = useState<AvailabilityMap>({}); // NEW STATE - สำหรับ Carousel
 
-  // สร้าง slot 30 นาที
+  // --- Mock Data/Helpers (ในโค้ดจริงต้องใช้ API) ---
   const baseSlots = [
-    "13:00","13:30","14:00","14:30","15:00","15:30",
-    "16:00","16:30","17:00","17:30","18:00","18:30",
-    "19:00","19:30","20:00","20:30","21:00","21:30"
+    "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+    "16:00", "16:30", "17:00", "17:30", "18:00", "18:30",
+    "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"
   ];
-
-  // ใช้เวลาขั้นต่ำ 1 ชั่วโมง สำหรับเริ่มงานใหม่
-  const minServiceDuration = 1; // 1 = 1 hour
+  const minServiceDuration = 1;
 
   const timeToFloat = (t: string | null): number | null => {
     if (!t) return null;
@@ -34,130 +37,154 @@ export default function BookingPage() {
     return h + m / 60;
   };
 
-  useEffect(() => {
-    const fetchAvailability = async () => {
-      setIsLoading(true);
-      const dateStr = selectedDate.toISOString().split("T")[0];
-      const weekday = selectedDate.getDay();
+  // --- 1. Fetch สถานะว่างสำหรับ Carousel ทั้งแถบ ---
+  const fetchAllAvailability = async (daysToShow = 14) => {
+    const dates = Array.from({ length: daysToShow }, (_, i) => addDays(new Date(), i));
+    const startDate = format(dates[0], 'yyyy-MM-dd');
+    const endDate = format(dates[dates.length - 1], 'yyyy-MM-dd');
 
-      try {
-        // 1) เวลาพิเศษในวันนั้น
-        const { data: exception } = await supabase
-          .from("store_exceptions")
-          .select("*")
-          .eq("date", dateStr)
-          .maybeSingle();
+    try {
+      // Fetch data from supabase (queues, store_hours)
+      const { data: queuesData } = await supabase
+        .from("queues")
+        .select("date, start_time, end_time, status")
+        .gte("date", startDate)
+        .lte("date", endDate)
+        .neq("status", "cancelled");
 
-        let openTime: string | null = null;
-        let closeTime: string | null = null;
-        let isClosed = false;
+      const { data: storeHoursData } = await supabase
+        .from("store_hours")
+        .select("*");
 
-        if (exception) {
-          openTime = exception.open_time;
-          closeTime = exception.close_time;
-          isClosed = exception.is_closed;
-        } else {
-          // 2) เวลาเปิด-ปิดปกติประจำสัปดาห์
-          const { data: hour } = await supabase
-            .from("store_hours")
-            .select("*")
-            .eq("weekday", weekday)
-            .maybeSingle();
+      const newMap: AvailabilityMap = {};
 
-          if (hour) {
-            openTime = hour.open_time;
-            closeTime = hour.close_time;
-            isClosed = hour.is_closed;
-          }
+      for (const date of dates) {
+        const dateStr = format(date, 'yyyy-MM-dd');
+        const weekday = getDay(date);
+
+        // Check store hours (using mock logic since we don't have store_exceptions data)
+        const hour = storeHoursData?.find(h => h.weekday === weekday);
+
+        let isClosed = hour?.is_closed || false;
+        let open = timeToFloat(hour?.open_time || null);
+        let close = timeToFloat(hour?.close_time || null);
+
+        if (isClosed || !open || !close) {
+          newMap[dateStr] = 'CLOSED';
+          continue;
         }
 
-        // 3) โหลดคิวของวันนั้น
-        const { data: bookings } = await supabase
-          .from("queues")
-          .select("start_time, end_time, status")
-          .eq("date", dateStr)
-          .neq("status", "cancelled");
+        // Check for available slots
+        const dayBookings = queuesData?.filter(q => q.date === dateStr) || [];
+        let hasOpenSlot = false;
 
-        const open = timeToFloat(openTime);
-        const close = timeToFloat(closeTime);
-
-        const updatedSlots: Slot[] = baseSlots.map((slotTime) => {
+        for (const slotTime of baseSlots) {
           const [h, m] = slotTime.split(":").map(Number);
-          const slotStart = h + m / 60; 
-          const slotEnd = slotStart + 0.5; // 30 นาที
+          const slotStart = h + m / 60;
+          const slotEnd = slotStart + 0.5;
 
-          if (isClosed) return { time: slotTime, status: "CLOSED" };
+          if (slotStart < open || slotEnd > close) continue;
 
-          if (open === null || close === null)
-            return { time: slotTime, status: "UNAVAILABLE" };
-
-          if (slotStart < open || slotEnd > close)
-            return { time: slotTime, status: "UNAVAILABLE" };
-
-          // เช็คว่ามีคิวทับหรือไม่ → FULL
-          const hasBooking = bookings?.some((b) => {
+          const hasBooking = dayBookings.some((b) => {
             const bStart = timeToFloat(b.start_time)!;
             const bEnd = timeToFloat(b.end_time)!;
             return slotStart < bEnd && slotEnd > bStart;
           });
 
-          if (hasBooking) return { time: slotTime, status: "FULL" };
-
-          // หา "คิวถัดไป"
-          const nextBooking = bookings
-            ?.map((b) => ({
-              start: timeToFloat(b.start_time)!,
-              end: timeToFloat(b.end_time)!,
-            }))
-            .filter((b) => b.start >= slotEnd)
-            .sort((a, b) => a.start - b.start)[0];
-
-          // ถ้าเหลือเวลาน้อยกว่า minServiceDuration → เริ่มไม่ได้
-          if (nextBooking) {
-            const remaining = nextBooking.start - slotStart;
-            if (remaining < minServiceDuration) {
-              return { time: slotTime, status: "UNAVAILABLE" };
-            }
+          if (!hasBooking) {
+            hasOpenSlot = true;
+            break;
           }
+        }
 
-          return { time: slotTime, status: "OPEN" };
+        if (isPast(date) && !isSameDay(date, new Date())) {
+          newMap[dateStr] = 'NONE';
+        } else if (hasOpenSlot) {
+          newMap[dateStr] = 'OPEN';
+        } else {
+          newMap[dateStr] = 'FULL';
+        }
+      }
+
+      setAvailabilityMap(newMap);
+    } catch (error) {
+      console.error("Error fetching availability range:", error);
+    }
+  };
+
+
+  // --- 2. Fetch Slot ละเอียดสำหรับวันที่เลือก ---
+  const fetchSelectedDaySlots = async () => {
+    setIsLoading(true);
+    const dateStr = selectedDate.toISOString().split("T")[0];
+    const weekday = selectedDate.getDay();
+
+    try {
+      // Fetch actual data for the selected date here in real scenario
+      const { data: bookings } = await supabase
+        .from("queues")
+        .select("start_time, end_time, status")
+        .eq("date", dateStr)
+        .neq("status", "cancelled");
+
+      const { data: hour } = await supabase
+        .from("store_hours")
+        .select("*")
+        .eq("weekday", weekday)
+        .maybeSingle();
+
+      const open = timeToFloat(hour?.open_time || null);
+      const close = timeToFloat(hour?.close_time || null);
+      const isClosed = hour?.is_closed || false;
+
+
+      const updatedSlots: Slot[] = baseSlots.map((slotTime) => {
+        const [h, m] = slotTime.split(":").map(Number);
+        const slotStart = h + m / 60;
+        const slotEnd = slotStart + 0.5;
+
+        if (isClosed) return { time: slotTime, status: "CLOSED" };
+        if (open === null || close === null) return { time: slotTime, status: "UNAVAILABLE" };
+
+        if (slotStart < open || slotEnd > close) return { time: slotTime, status: "UNAVAILABLE" };
+
+        const hasBooking = bookings?.some((b) => {
+          const bStart = timeToFloat(b.start_time)!;
+          const bEnd = timeToFloat(b.end_time)!;
+          return slotStart < bEnd && slotEnd > bStart;
         });
 
-        setSlots(updatedSlots);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+        if (hasBooking) return { time: slotTime, status: "FULL" };
 
-    fetchAvailability();
+        return { time: slotTime, status: "OPEN" };
+      });
+
+      setSlots(updatedSlots);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchAllAvailability();
+  }, []);
+
+  useEffect(() => {
+    fetchSelectedDaySlots();
   }, [selectedDate]);
 
-  // สีของ Slot
-  const slotStyle = (status: SlotStatus) => {
-    switch (status) {
-      case "OPEN":
-        return "bg-emerald-100 text-emerald-600 border border-emerald-300";
-      case "FULL":
-        return "bg-pink-100 text-pink-600 border border-pink-300";
-      case "UNAVAILABLE":
-        return "bg-slate-100 text-slate-400 border border-slate-200";
-      case "CLOSED":
-        return "bg-slate-200 text-slate-400 border border-slate-300";
-    }
-  };
 
-  const slotLabel = (status: SlotStatus) => {
-    switch (status) {
-      case "OPEN": return "คิวว่าง";
-      case "FULL": return "มีคิว";
-      case "UNAVAILABLE": return "ไม่สามารถจองได้";
-      case "CLOSED": return "ปิดร้าน";
-    }
-  };
+  // Helper for status badge for the selected day itself
+  const selectedDayStatus = availabilityMap[format(selectedDate, 'yyyy-MM-dd')] || 'NONE';
+  let statusColor = "text-slate-500";
+  if (selectedDayStatus === 'OPEN') statusColor = "text-emerald-500";
+  if (selectedDayStatus === 'FULL' || selectedDayStatus === 'CLOSED') statusColor = "text-pink-500";
+
 
   return (
-    <div className="min-h-screen bg-[#FFF0F7]">
-      {/* HEADER */}
+    <div className="min-h-screen bg-[#FFF0F7] w-full max-w-[100vw] overflow-x-hidden">
+      {/* HEADER (เหมือนเดิม) */}
       <header className="bg-white px-6 py-4 flex justify-center items-center shadow-sm sticky top-0 z-50">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 rounded-full overflow-hidden border border-pink-200 mb-1 relative">
@@ -172,41 +199,66 @@ export default function BookingPage() {
 
         {/* Intro */}
         <div className="bg-white/80 rounded-3xl p-6 text-center shadow-sm">
-          <h2 className="text-xl font-bold text-slate-800 mb-2">ตารางคิวว่าง</h2>
-          <p className="text-slate-500 text-sm">ดูเวลาว่างเพื่อทักแชทจองค่ะ 💅</p>
+          <h2 className="text-xl font-bold text-slate-800 mb-2">จองคิวง่ายๆ แค่ 2 ขั้นตอน</h2>
+          <p className="text-slate-500 text-sm">เลือกวันว่าง แล้วเลือกเวลาที่ต้องการ 💅</p>
         </div>
 
-        {/* Date Selector */}
-        <div className="bg-white rounded-3xl p-6 shadow-soft">
-          <DateCarousel selectedDate={selectedDate} onDateSelect={setSelectedDate} />
+        {/* Date Selector Area (Simple and Clear) */}
+        <div className="bg-white rounded-3xl p-4 shadow-soft">
+          <h3 className="font-bold text-slate-800 mb-4 text-lg flex items-center gap-2">
+            <Calendar size={20} className="text-primary" /> 1. เลือกวันว่าง
+          </h3>
+          <DateCarousel
+            selectedDate={selectedDate}
+            onDateSelect={setSelectedDate}
+            availabilityMap={availabilityMap} // <-- ส่งสถานะไปให้ Carousel จัดการ
+          />
+          {/* Status Indicator for selected date */}
+          <div className={cn("mt-4 text-center font-bold text-sm", statusColor)}>
+            {selectedDayStatus === 'OPEN' && <span>✅ วันที่ {format(selectedDate, 'd MMM')} ยังมีคิวว่าง</span>}
+            {selectedDayStatus === 'FULL' && <span>❌ วันที่ {format(selectedDate, 'd MMM')} คิวเต็มแล้ว</span>}
+            {selectedDayStatus === 'CLOSED' && <span>🚫 วันที่ {format(selectedDate, 'd MMM')} ปิดร้าน</span>}
+            {(selectedDayStatus === 'NONE' || (isPast(selectedDate) && !isSameDay(selectedDate, new Date()))) && <span>👆 เลือกวันอื่นที่มีสีเขียวค่ะ</span>}
+          </div>
         </div>
 
         {/* SLOT BLOCKS */}
         <div className="bg-white rounded-3xl p-6 shadow-soft">
-          <h3 className="font-bold text-slate-800 mb-4">เวลาที่ให้บริการ</h3>
+          <h3 className="font-bold text-slate-800 mb-4 text-lg flex items-center gap-2">
+            <Clock size={20} className="text-primary" /> 2. เลือกเวลา
+          </h3>
 
           {isLoading ? (
             <p className="text-center text-slate-400 py-4 text-sm">กำลังโหลด...</p>
           ) : (
             <div className="grid grid-cols-3 gap-3">
               {slots.map((slot) => (
-                <div
+                <button
                   key={slot.time}
+                  disabled={slot.status !== 'OPEN'}
                   className={cn(
-                    "rounded-2xl py-3 flex flex-col items-center text-sm font-semibold transition-all",
-                    slotStyle(slot.status)
+                    "rounded-xl py-3 flex flex-col items-center text-sm font-semibold transition-all active:scale-95",
+                    slot.status === "OPEN"
+                      ? "bg-emerald-100 text-emerald-600 border border-emerald-300 hover:bg-emerald-200"
+                      : slot.status === "FULL"
+                        ? "bg-pink-100 text-pink-600 border border-pink-300 opacity-80 cursor-not-allowed"
+                        : slot.status === "CLOSED"
+                          ? "bg-slate-200 text-slate-400 border border-slate-300 opacity-60 cursor-not-allowed"
+                          : "bg-slate-100 text-slate-400 border border-slate-200 opacity-60 cursor-not-allowed"
                   )}
                 >
                   <span className="text-base font-bold">{slot.time}</span>
-                  <span className="text-[12px] mt-1">{slotLabel(slot.status)}</span>
-                </div>
+                  <span className="text-[10px] mt-1">
+                    {slot.status === "OPEN" ? "ว่าง!" : slot.status === "FULL" ? "เต็ม" : slot.status === "CLOSED" ? "ปิดร้าน" : "ไม่ว่าง"}
+                  </span>
+                </button>
               ))}
             </div>
           )}
         </div>
       </main>
 
-      {/* CTA */}
+      {/* CTA (เหมือนเดิม) */}
       <div className="fixed bottom-0 left-0 w-full p-4 bg-white border-t border-slate-100 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)] z-50">
         <div className="max-w-md mx-auto">
           <a

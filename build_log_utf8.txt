@@ -1,0 +1,3390 @@
+﻿
+> fairymate@0.1.0 build
+> next build
+
+node.exe :  ΓÜá 
+`eslint` 
+configuration in 
+next.config.ts is no 
+longer supported. 
+See more info here: h
+ttps://nextjs.org/doc
+s/app/api-reference/c
+li/next#next-lint-opt
+ions
+At line:1 char:1
++ & "C:\Program Files
+\nodejs/node.exe" "C:
+\Users\nutta\AppData\
+Roaming\ ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: ( ΓÜá `e   
+ slint` c...xt-li    
+nt-options:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+ ΓÜá Invalid 
+next.config.ts 
+options detected: 
+ ΓÜá     
+Unrecognized key(s) 
+in object: 'eslint'
+ ΓÜá See more info 
+here: https://nextjs.
+org/docs/messages/inv
+alid-next-config
+   Γû▓ Next.js 16.0.6 (Turbopack)
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+
+> Build error 
+occurred
+Error: Turbopack 
+build failed with 27 
+errors:
+./app/admin/queues/pa
+ge.tsx:8:1
+Module not found: 
+Can't resolve '@/comp
+onents/DateCarousel'
+[0m [90m  6 |[39m 
+[36mimport[39m { [
+33mSend[39m[33m,[3
+9m [33mLoader2[39m
+[33m,[39m [33mCalen
+darDays[39m[33m,[3
+9m [33mCheckCircle[
+39m[33m,[39m [33mX
+[39m[33m,[39m [33
+mEdit2[39m[33m,[39
+m [33mTrash2[39m[3
+3m,[39m [33mClock[
+39m[33m,[39m 
+[33mWallet[39m } 
+[36mfrom[39m [32m'
+lucide-react'[39m[3
+3m;[39m
+ [90m  7 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m'
+@/components/ui/Statu
+sBadge'[39m[33m;[3
+9m
+[31m[1m>[22m[39m
+[90m  8 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m'
+@/components/DateCaro
+usel'[39m[33m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m
+ [90m  9 |[39m 
+[36mimport[39m { 
+format[33m,[39m 
+isToday[33m,[39m is
+Tomorrow[33m,[39m 
+parseISO } 
+[36mfrom[39m [32m'
+date-fns'[39m[33m;
+[39m
+ [90m 10 |[39m 
+[36mimport[39m { 
+th } [36mfrom[39m 
+[32m'date-fns/locale'
+[39m[33m;[39m
+ [90m 11 |[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component Browser]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component SSR]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/queues/pa
+ge.tsx:17:1
+Module not found: 
+Can't resolve '@/comp
+onents/DateCarousel'
+[0m [90m 15 |[39m 
+} [36mfrom[39m [32
+m'lucide-react'[39m
+[33m;[39m
+ [90m 16 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m'
+@/components/ui/Statu
+sBadge'[39m[33m;[3
+9m
+[31m[1m>[22m[39m
+[90m 17 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m'
+@/components/DateCaro
+usel'[39m[33m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m
+ [90m 18 |[39m 
+[36mimport[39m { 
+format[33m,[39m 
+isToday[33m,[39m is
+Tomorrow[33m,[39m 
+parseISO } 
+[36mfrom[39m [32m'
+date-fns'[39m[33m;
+[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+th } [36mfrom[39m 
+[32m'date-fns/locale'
+[39m[33m;[39m
+ [90m 20 |[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component Browser]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component SSR]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/booking/page.ts
+x:6:1
+Module not found: 
+Can't resolve '@/comp
+onents/DateCarousel'
+[0m [90m 4 |[39m 
+[36mimport[39m 
+[33mImage[39m 
+[36mfrom[39m [32m"
+next/image"[39m[33m
+;[39m
+ [90m 5 |[39m 
+[36mimport[39m { 
+[33mFacebook[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+[31m[1m>[22m[39m
+[90m 6 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m"
+@/components/DateCaro
+usel"[39m[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+ [90m 8 |[39m 
+[36mimport[39m { 
+cn } [36mfrom[39m 
+[32m"@/lib/utils"[39
+m[33m;[39m
+ [90m 9 |[39m type 
+[33mSlotStatus[39m 
+[33m=[39m 
+[32m"OPEN"[39m 
+[33m|[39m 
+[32m"FULL"[39m 
+[33m|[39m [32m"UNA
+VAILABLE"[39m 
+[33m|[39m [32m"CLO
+SED"[39m[33m;[39m
+[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/booking/pag
+e.tsx [Client 
+Component Browser]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/booking/pag
+e.tsx [Client 
+Component SSR]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/booking/page.ts
+x:5:1
+Module not found: 
+Can't resolve '@/comp
+onents/DateCarousel'
+[0m [90m 3 |[39m 
+[36mimport[39m 
+[33mImage[39m 
+[36mfrom[39m [32m"
+next/image"[39m[33m
+;[39m
+ [90m 4 |[39m 
+[36mimport[39m { 
+[33mFacebook[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+[31m[1m>[22m[39m
+[90m 5 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m"
+@/components/DateCaro
+usel"[39m[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m
+ [90m 6 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+cn } [36mfrom[39m 
+[32m"@/lib/utils"[39
+m[33m;[39m
+ [90m 8 |[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/booking/pag
+e.tsx [Client 
+Component Browser]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/booking/pag
+e.tsx [Client 
+Component SSR]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/layout.ts
+x:5:1
+Module not found: 
+Can't resolve '@/comp
+onents/Sidebar'
+[0m [90m 3 |[39m 
+[36mimport[39m { c 
+[36mas[39m _c } 
+[36mfrom[39m [32m"
+react/compiler-runtim
+e"[39m[33m;[39m
+ [90m 4 |[39m 
+[36mimport[39m { 
+useState } 
+[36mfrom[39m [32m"
+react"[39m[33m;[39
+m
+[31m[1m>[22m[39m
+[90m 5 |[39m 
+[36mimport[39m 
+[33mSidebar[39m 
+[36mfrom[39m [32m"
+@/components/Sidebar"
+[39m[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m
+ [90m 6 |[39m 
+[36mimport[39m { 
+[33mMenu[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+ [90m 7 |[39m 
+[36mexport[39m 
+[36mdefault[39m 
+[36mfunction[39m [
+33mAdminLayout[39m(t
+0) {
+ [90m 8 |[39m   
+[36mconst[39m $ 
+[33m=[39m _c([35m1
+0[39m)[33m;[39m[0
+m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/layou
+t.tsx [Client 
+Component Browser]
+    ./app/admin/layou
+t.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/layou
+t.tsx [Client 
+Component SSR]
+    ./app/admin/layou
+t.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/layout.ts
+x:3:1
+Module not found: 
+Can't resolve '@/comp
+onents/Sidebar'
+[0m [90m 1 |[39m 
+[32m"use client"[39
+m[33m;[39m
+ [90m 2 |[39m 
+[36mimport[39m { 
+useState } 
+[36mfrom[39m [32m"
+react"[39m[33m;[39
+m
+[31m[1m>[22m[39m
+[90m 3 |[39m 
+[36mimport[39m 
+[33mSidebar[39m 
+[36mfrom[39m [32m"
+@/components/Sidebar"
+[39m[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m
+ [90m 4 |[39m 
+[36mimport[39m { 
+[33mMenu[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+ [90m 5 |[39m
+ [90m 6 |[39m 
+[36mexport[39m 
+[36mdefault[39m 
+[36mfunction[39m [
+33mAdminLayout[39m({
+[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/layou
+t.tsx [Client 
+Component Browser]
+    ./app/admin/layou
+t.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/layou
+t.tsx [Client 
+Component SSR]
+    ./app/admin/layou
+t.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/dashboard
+/page.tsx:7:1
+Module not found: 
+Can't resolve '@/comp
+onents/ui/StatusBadge
+'
+[0m [90m  5 |[39m 
+[36mimport[39m 
+[33mLink[39m 
+[36mfrom[39m [32m"
+next/link"[39m[33m;
+[39m
+ [90m  6 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+[31m[1m>[22m[39m
+[90m  7 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m"
+@/components/ui/Statu
+sBadge"[39m[33m;[3
+9m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m
+ [90m  8 |[39m 
+[36mimport[39m { [
+33mClock[39m[33m,[
+39m [33mReceipt[39m
+[33m,[39m [33mEdit
+2[39m[33m,[39m [3
+3mCheck[39m[33m,[3
+9m [33mX[39m[33m,
+[39m [33mLoader2[39
+m[33m,[39m [33mCal
+endarDays[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+ [90m  9 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m"
+@/lib/utils"[39m[33
+m;[39m
+ [90m 10 |[39m 
+[36mconst[39m 
+weekdayNames 
+[33m=[39m [[32m"α╕
+¡α╕▓α╕ùα╕┤α╕òα╕óα╣î"
+[39m[33m,[39m [32m
+"α╕êα╕▒α╕Öα╕ùα╕úα╣î"
+[39m[33m,[39m [32m
+"α╕¡α╕▒α╕çα╕äα╕▓α╕ú"
+[39m[33m,[39m [32m
+"α╕₧α╕╕α╕ÿ"[39m[33m
+,[39m [32m"α╕₧α╕ñα╕
+½α╕▒α╕¬"[39m[33m,[
+39m [32m"α╕¿α╕╕α╕üα╕
+úα╣î"[39m[33m,[39m
+ [32m"α╣Çα╕¬α╕▓α╕úα╣
+î"[39m][33m;[39m[
+0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+Browser]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+  Client Component 
+SSR:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+SSR]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/dashboard
+/page.tsx:6:1
+Module not found: 
+Can't resolve '@/comp
+onents/ui/StatusBadge
+'
+[0m [90m 4 |[39m 
+[36mimport[39m 
+[33mLink[39m 
+[36mfrom[39m [32m"
+next/link"[39m[33m;
+[39m
+ [90m 5 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+[31m[1m>[22m[39m
+[90m 6 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m"
+@/components/ui/Statu
+sBadge"[39m[33m;[3
+9m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m
+ [90m 7 |[39m 
+[36mimport[39m {
+ [90m 8 |[39m   [3
+3mClock[39m[33m,[3
+9m [33mReceipt[39m
+[33m,[39m [33mEdit2
+[39m[33m,[39m [33
+mCheck[39m[33m,[39
+m [33mX[39m[33m,[
+39m [33mLoader2[39m
+[33m,[39m [33mCale
+ndarDays[39m[33m,[
+39m
+ [90m 9 |[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+Browser]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+  Client Component 
+SSR:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+SSR]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/queues/pa
+ge.tsx:7:1
+Module not found: 
+Can't resolve '@/comp
+onents/ui/StatusBadge
+'
+[0m [90m  5 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m'
+@/lib/utils'[39m[33
+m;[39m
+ [90m  6 |[39m 
+[36mimport[39m { [
+33mSend[39m[33m,[3
+9m [33mLoader2[39m
+[33m,[39m [33mCalen
+darDays[39m[33m,[3
+9m [33mCheckCircle[
+39m[33m,[39m [33mX
+[39m[33m,[39m [33
+mEdit2[39m[33m,[39
+m [33mTrash2[39m[3
+3m,[39m [33mClock[
+39m[33m,[39m 
+[33mWallet[39m } 
+[36mfrom[39m [32m'
+lucide-react'[39m[3
+3m;[39m
+[31m[1m>[22m[39m
+[90m  7 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m'
+@/components/ui/Statu
+sBadge'[39m[33m;[3
+9m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m
+ [90m  8 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m'
+@/components/DateCaro
+usel'[39m[33m;[39m
+ [90m  9 |[39m 
+[36mimport[39m { 
+format[33m,[39m 
+isToday[33m,[39m is
+Tomorrow[33m,[39m 
+parseISO } 
+[36mfrom[39m [32m'
+date-fns'[39m[33m;
+[39m
+ [90m 10 |[39m 
+[36mimport[39m { 
+th } [36mfrom[39m 
+[32m'date-fns/locale'
+[39m[33m;[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component Browser]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component SSR]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/queues/pa
+ge.tsx:16:1
+Module not found: 
+Can't resolve '@/comp
+onents/ui/StatusBadge
+'
+[0m [90m 14 |[39m 
+  [33mWallet[39m
+ [90m 15 |[39m } 
+[36mfrom[39m [32m'
+lucide-react'[39m[3
+3m;[39m
+[31m[1m>[22m[39m
+[90m 16 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m'
+@/components/ui/Statu
+sBadge'[39m[33m;[3
+9m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m
+ [90m 17 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m'
+@/components/DateCaro
+usel'[39m[33m;[39m
+ [90m 18 |[39m 
+[36mimport[39m { 
+format[33m,[39m 
+isToday[33m,[39m is
+Tomorrow[33m,[39m 
+parseISO } 
+[36mfrom[39m [32m'
+date-fns'[39m[33m;
+[39m
+ [90m 19 |[39m 
+[36mimport[39m { 
+th } [36mfrom[39m 
+[32m'date-fns/locale'
+[39m[33m;[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component Browser]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component SSR]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/dashboard
+/page.tsx:6:1
+Module not found: 
+Can't resolve 
+'@/lib/supabase'
+[0m [90m 4 |[39m 
+[36mimport[39m { 
+useEffect[33m,[39m 
+useState } 
+[36mfrom[39m [32m"
+react"[39m[33m;[39
+m
+ [90m 5 |[39m 
+[36mimport[39m 
+[33mLink[39m 
+[36mfrom[39m [32m"
+next/link"[39m[33m;
+[39m
+[31m[1m>[22m[39m
+[90m 6 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 7 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m"
+@/components/ui/Statu
+sBadge"[39m[33m;[3
+9m
+ [90m 8 |[39m 
+[36mimport[39m { [
+33mClock[39m[33m,[
+39m [33mReceipt[39m
+[33m,[39m [33mEdit
+2[39m[33m,[39m [3
+3mCheck[39m[33m,[3
+9m [33mX[39m[33m,
+[39m [33mLoader2[39
+m[33m,[39m [33mCal
+endarDays[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+ [90m 9 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m"
+@/lib/utils"[39m[33
+m;[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+Browser]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+  Client Component 
+SSR:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+SSR]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/dashboard
+/page.tsx:5:1
+Module not found: 
+Can't resolve 
+'@/lib/supabase'
+[0m [90m 3 |[39m 
+[36mimport[39m { 
+useEffect[33m,[39m 
+useState } 
+[36mfrom[39m [32m"
+react"[39m[33m;[39
+m
+ [90m 4 |[39m 
+[36mimport[39m 
+[33mLink[39m 
+[36mfrom[39m [32m"
+next/link"[39m[33m;
+[39m
+[31m[1m>[22m[39m
+[90m 5 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 6 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m"
+@/components/ui/Statu
+sBadge"[39m[33m;[3
+9m
+ [90m 7 |[39m 
+[36mimport[39m {
+ [90m 8 |[39m   [3
+3mClock[39m[33m,[3
+9m [33mReceipt[39m
+[33m,[39m [33mEdit2
+[39m[33m,[39m [33
+mCheck[39m[33m,[39
+m [33mX[39m[33m,[
+39m [33mLoader2[39m
+[33m,[39m [33mCale
+ndarDays[39m[33m,[
+39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+Browser]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+  Client Component 
+SSR:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+SSR]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/queues/pa
+ge.tsx:4:1
+Module not found: 
+Can't resolve 
+'@/lib/supabase'
+[0m [90m 2 |[39m
+ [90m 3 |[39m 
+[36mimport[39m { 
+useState[33m,[39m 
+useEffect[33m,[39m 
+useRef } 
+[36mfrom[39m [32m'
+react'[39m[33m;[39
+m
+[31m[1m>[22m[39m
+[90m 4 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m'
+@/lib/supabase'[39m
+[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 5 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m'
+@/lib/utils'[39m[33
+m;[39m
+ [90m 6 |[39m 
+[36mimport[39m { [
+33mSend[39m[33m,[3
+9m [33mLoader2[39m
+[33m,[39m [33mCalen
+darDays[39m[33m,[3
+9m [33mCheckCircle[
+39m[33m,[39m [33mX
+[39m[33m,[39m [33
+mEdit2[39m[33m,[39
+m [33mTrash2[39m[3
+3m,[39m [33mClock[
+39m[33m,[39m 
+[33mWallet[39m } 
+[36mfrom[39m [32m'
+lucide-react'[39m[3
+3m;[39m
+ [90m 7 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m'
+@/components/ui/Statu
+sBadge'[39m[33m;[3
+9m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component Browser]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component SSR]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/queues/pa
+ge.tsx:3:1
+Module not found: 
+Can't resolve 
+'@/lib/supabase'
+[0m [90m 1 |[39m 
+[32m"use client"[39
+m[33m;[39m
+ [90m 2 |[39m 
+[36mimport[39m { 
+useState[33m,[39m 
+useEffect[33m,[39m 
+useRef } 
+[36mfrom[39m [32m'
+react'[39m[33m;[39
+m
+[31m[1m>[22m[39m
+[90m 3 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m'
+@/lib/supabase'[39m
+[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 4 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m'
+@/lib/utils'[39m[33
+m;[39m
+ [90m 5 |[39m 
+[36mimport[39m { 
+ [90m 6 |[39m   [3
+3mSend[39m[33m,[39
+m [0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component Browser]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component SSR]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/receipts/
+page.tsx:4:1
+Module not found: 
+Can't resolve 
+'@/lib/supabase'
+[0m [90m 2 |[39m
+ [90m 3 |[39m 
+[36mimport[39m { 
+useState[33m,[39m 
+useEffect[33m,[39m 
+useRef } 
+[36mfrom[39m [32m'
+react'[39m[33m;[39
+m
+[31m[1m>[22m[39m
+[90m 4 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m'
+@/lib/supabase'[39m
+[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 5 |[39m 
+[36mimport[39m { [
+33mFileText[39m[33m
+,[39m [33mSend[39m
+[33m,[39m [33mLoad
+er2[39m[33m,[39m 
+[33mPlus[39m[33m,[
+39m [33mCheckCircle
+[39m[33m,[39m [33m
+AlertCircle[39m[33m
+,[39m 
+[33mImage[39m 
+[36mas[39m [33mIma
+geIcon[39m[33m,[39
+m [33mReceipt[39m 
+[36mas[39m [33mRec
+eiptIcon[39m } 
+[36mfrom[39m [32m'
+lucide-react'[39m[3
+3m;[39m
+ [90m 6 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m'
+@/lib/utils'[39m[33
+m;[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+format } 
+[36mfrom[39m [32m'
+date-fns'[39m[33m;
+[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/recei
+pts/page.tsx [Client 
+Component Browser]
+    ./app/admin/recei
+pts/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/recei
+pts/page.tsx [Client 
+Component SSR]
+    ./app/admin/recei
+pts/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/receipts/
+page.tsx:3:1
+Module not found: 
+Can't resolve 
+'@/lib/supabase'
+[0m [90m 1 |[39m 
+[32m"use client"[39
+m[33m;[39m
+ [90m 2 |[39m 
+[36mimport[39m { 
+useState[33m,[39m 
+useEffect[33m,[39m 
+useRef } 
+[36mfrom[39m [32m'
+react'[39m[33m;[39
+m
+[31m[1m>[22m[39m
+[90m 3 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m'
+@/lib/supabase'[39m
+[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 4 |[39m 
+[36mimport[39m { 
+ [90m 5 |[39m   [3
+3mFileText[39m[33m,
+[39m 
+ [90m 6 |[39m   [3
+3mSend[39m[33m,[39
+m [0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/recei
+pts/page.tsx [Client 
+Component Browser]
+    ./app/admin/recei
+pts/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/recei
+pts/page.tsx [Client 
+Component SSR]
+    ./app/admin/recei
+pts/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/api/queues/rout
+e.ts:2:1
+Module not found: 
+Can't resolve 
+'@/lib/supabase'
+[0m [90m 1 |[39m 
+[36mimport[39m { [
+33mNextResponse[39m 
+} [36mfrom[39m [32
+m'next/server'[39m[
+33m;[39m
+[31m[1m>[22m[39m
+[90m 2 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m'
+@/lib/supabase'[39m
+[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 3 |[39m
+ [90m 4 |[39m 
+[36mexport[39m 
+[36masync[39m 
+[36mfunction[39m [
+33mGET[39m(request[
+33m:[39m 
+[33mRequest[39m) {
+ [90m 5 |[39m   
+[36mconst[39m { 
+searchParams } 
+[33m=[39m 
+[36mnew[39m [33mUR
+L[39m(request[33m.
+[39murl)[33m;[39m[
+0m
+
+
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/booking/page.ts
+x:7:1
+Module not found: 
+Can't resolve 
+'@/lib/supabase'
+[0m [90m  5 |[39m 
+[36mimport[39m { 
+[33mFacebook[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+ [90m  6 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m"
+@/components/DateCaro
+usel"[39m[33m;[39m
+[31m[1m>[22m[39m
+[90m  7 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m
+ [90m  8 |[39m 
+[36mimport[39m { 
+cn } [36mfrom[39m 
+[32m"@/lib/utils"[39
+m[33m;[39m
+ [90m  9 |[39m 
+type 
+[33mSlotStatus[39m 
+[33m=[39m 
+[32m"OPEN"[39m 
+[33m|[39m 
+[32m"FULL"[39m 
+[33m|[39m [32m"UNA
+VAILABLE"[39m 
+[33m|[39m [32m"CLO
+SED"[39m[33m;[39m
+ [90m 10 |[39m 
+type [33mSlot[39m 
+[33m=[39m {[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/booking/pag
+e.tsx [Client 
+Component Browser]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/booking/pag
+e.tsx [Client 
+Component SSR]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/booking/page.ts
+x:6:1
+Module not found: 
+Can't resolve 
+'@/lib/supabase'
+[0m [90m 4 |[39m 
+[36mimport[39m { 
+[33mFacebook[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+ [90m 5 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m"
+@/components/DateCaro
+usel"[39m[33m;[39m
+[31m[1m>[22m[39m
+[90m 6 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+cn } [36mfrom[39m 
+[32m"@/lib/utils"[39
+m[33m;[39m
+ [90m 8 |[39m
+ [90m 9 |[39m type 
+[33mSlotStatus[39m 
+[33m=[39m 
+[32m"OPEN"[39m 
+[33m|[39m 
+[32m"FULL"[39m 
+[33m|[39m [32m"UNA
+VAILABLE"[39m 
+[33m|[39m [32m"CLO
+SED"[39m[33m;[39m
+[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/booking/pag
+e.tsx [Client 
+Component Browser]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/booking/pag
+e.tsx [Client 
+Component SSR]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/dashboard
+/page.tsx:9:1
+Module not found: 
+Can't resolve 
+'@/lib/utils'
+[0m [90m  7 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m"
+@/components/ui/Statu
+sBadge"[39m[33m;[3
+9m
+ [90m  8 |[39m 
+[36mimport[39m { [
+33mClock[39m[33m,[
+39m [33mReceipt[39m
+[33m,[39m [33mEdit
+2[39m[33m,[39m [3
+3mCheck[39m[33m,[3
+9m [33mX[39m[33m,
+[39m [33mLoader2[39
+m[33m,[39m [33mCal
+endarDays[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+[31m[1m>[22m[39m
+[90m  9 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m"
+@/lib/utils"[39m[33
+m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m
+ [90m 10 |[39m 
+[36mconst[39m 
+weekdayNames 
+[33m=[39m [[32m"α╕
+¡α╕▓α╕ùα╕┤α╕òα╕óα╣î"
+[39m[33m,[39m [32m
+"α╕êα╕▒α╕Öα╕ùα╕úα╣î"
+[39m[33m,[39m [32m
+"α╕¡α╕▒α╕çα╕äα╕▓α╕ú"
+[39m[33m,[39m [32m
+"α╕₧α╕╕α╕ÿ"[39m[33m
+,[39m [32m"α╕₧α╕ñα╕
+½α╕▒α╕¬"[39m[33m,[
+39m [32m"α╕¿α╕╕α╕üα╕
+úα╣î"[39m[33m,[39m
+ [32m"α╣Çα╕¬α╕▓α╕úα╣
+î"[39m][33m;[39m
+ [90m 11 |[39m 
+type 
+[33mStoreHour[39m 
+[33m=[39m {
+ [90m 12 |[39m   
+weekday[33m:[39m 
+number[33m;[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+Browser]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+  Client Component 
+SSR:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+SSR]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/dashboard
+/page.tsx:10:1
+Module not found: 
+Can't resolve 
+'@/lib/utils'
+[0m [90m  8 |[39m 
+  [33mClock[39m[33
+m,[39m [33mReceipt
+[39m[33m,[39m [33m
+Edit2[39m[33m,[39m
+ [33mCheck[39m[33m
+,[39m [33mX[39m[3
+3m,[39m [33mLoader2
+[39m[33m,[39m [33
+mCalendarDays[39m[3
+3m,[39m
+ [90m  9 |[39m } 
+[36mfrom[39m [32m"
+lucide-react"[39m[3
+3m;[39m
+[31m[1m>[22m[39m
+[90m 10 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m"
+@/lib/utils"[39m[33
+m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m
+ [90m 11 |[39m
+ [90m 12 |[39m 
+[36mconst[39m 
+weekdayNames 
+[33m=[39m [
+ [90m 13 |[39m   [
+32m"α╕¡α╕▓α╕ùα╕┤α╕òα╕
+óα╣î"[39m[33m,[39m
+[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+Browser]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+  Client Component 
+SSR:
+    ./app/admin/dashb
+oard/page.tsx 
+[Client Component 
+SSR]
+    ./app/admin/dashb
+oard/page.tsx 
+[Server Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/queues/pa
+ge.tsx:5:1
+Module not found: 
+Can't resolve 
+'@/lib/utils'
+[0m [90m 3 |[39m 
+[36mimport[39m { 
+useState[33m,[39m 
+useEffect[33m,[39m 
+useRef } 
+[36mfrom[39m [32m'
+react'[39m[33m;[39
+m
+ [90m 4 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m'
+@/lib/supabase'[39m
+[33m;[39m
+[31m[1m>[22m[39m
+[90m 5 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m'
+@/lib/utils'[39m[33
+m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m
+ [90m 6 |[39m 
+[36mimport[39m { [
+33mSend[39m[33m,[3
+9m [33mLoader2[39m
+[33m,[39m [33mCalen
+darDays[39m[33m,[3
+9m [33mCheckCircle[
+39m[33m,[39m [33mX
+[39m[33m,[39m [33
+mEdit2[39m[33m,[39
+m [33mTrash2[39m[3
+3m,[39m [33mClock[
+39m[33m,[39m 
+[33mWallet[39m } 
+[36mfrom[39m [32m'
+lucide-react'[39m[3
+3m;[39m
+ [90m 7 |[39m 
+[36mimport[39m [33
+mStatusBadge[39m 
+[36mfrom[39m [32m'
+@/components/ui/Statu
+sBadge'[39m[33m;[3
+9m
+ [90m 8 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m'
+@/components/DateCaro
+usel'[39m[33m;[39m
+[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component Browser]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component SSR]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/queues/pa
+ge.tsx:4:1
+Module not found: 
+Can't resolve 
+'@/lib/utils'
+[0m [90m 2 |[39m 
+[36mimport[39m { 
+useState[33m,[39m 
+useEffect[33m,[39m 
+useRef } 
+[36mfrom[39m [32m'
+react'[39m[33m;[39
+m
+ [90m 3 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m'
+@/lib/supabase'[39m
+[33m;[39m
+[31m[1m>[22m[39m
+[90m 4 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m'
+@/lib/utils'[39m[33
+m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m
+ [90m 5 |[39m 
+[36mimport[39m { 
+ [90m 6 |[39m   [3
+3mSend[39m[33m,[39
+m 
+ [90m 7 |[39m   [3
+3mLoader2[39m[33m,
+[39m [0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component Browser]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/queue
+s/page.tsx [Client 
+Component SSR]
+    ./app/admin/queue
+s/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/receipts/
+page.tsx:6:1
+Module not found: 
+Can't resolve 
+'@/lib/utils'
+[0m [90m 4 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m'
+@/lib/supabase'[39m
+[33m;[39m
+ [90m 5 |[39m 
+[36mimport[39m { [
+33mFileText[39m[33m
+,[39m [33mSend[39m
+[33m,[39m [33mLoad
+er2[39m[33m,[39m 
+[33mPlus[39m[33m,[
+39m [33mCheckCircle
+[39m[33m,[39m [33m
+AlertCircle[39m[33m
+,[39m 
+[33mImage[39m 
+[36mas[39m [33mIma
+geIcon[39m[33m,[39
+m [33mReceipt[39m 
+[36mas[39m [33mRec
+eiptIcon[39m } 
+[36mfrom[39m [32m'
+lucide-react'[39m[3
+3m;[39m
+[31m[1m>[22m[39m
+[90m 6 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m'
+@/lib/utils'[39m[33
+m;[39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+format } 
+[36mfrom[39m [32m'
+date-fns'[39m[33m;
+[39m
+ [90m 8 |[39m 
+[36mimport[39m { 
+th } [36mfrom[39m 
+[32m'date-fns/locale'
+[39m[33m;[39m
+ [90m 9 |[39m 
+[36mimport[39m 
+[33mImage[39m 
+[36mfrom[39m [32m'
+next/image'[39m[33m
+;[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/recei
+pts/page.tsx [Client 
+Component Browser]
+    ./app/admin/recei
+pts/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/recei
+pts/page.tsx [Client 
+Component SSR]
+    ./app/admin/recei
+pts/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/admin/receipts/
+page.tsx:14:1
+Module not found: 
+Can't resolve 
+'@/lib/utils'
+[0m [90m 12 |[39m 
+  [33mReceipt[39m 
+[36mas[39m 
+[33mReceiptIcon[39m
+ [90m 13 |[39m } 
+[36mfrom[39m [32m'
+lucide-react'[39m[3
+3m;[39m
+[31m[1m>[22m[39m
+[90m 14 |[39m 
+[36mimport[39m { fo
+rmatCurrency[33m,[3
+9m cn } 
+[36mfrom[39m [32m'
+@/lib/utils'[39m[33
+m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m
+ [90m 15 |[39m 
+[36mimport[39m { 
+format } 
+[36mfrom[39m [32m'
+date-fns'[39m[33m;
+[39m
+ [90m 16 |[39m 
+[36mimport[39m { 
+th } [36mfrom[39m 
+[32m'date-fns/locale'
+[39m[33m;[39m
+ [90m 17 |[39m 
+[36mimport[39m 
+[33mImage[39m 
+[36mfrom[39m [32m'
+next/image'[39m[33m
+;[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/admin/recei
+pts/page.tsx [Client 
+Component Browser]
+    ./app/admin/recei
+pts/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/admin/recei
+pts/page.tsx [Client 
+Component SSR]
+    ./app/admin/recei
+pts/page.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/booking/page.ts
+x:8:1
+Module not found: 
+Can't resolve 
+'@/lib/utils'
+[0m [90m  6 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m"
+@/components/DateCaro
+usel"[39m[33m;[39m
+ [90m  7 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+[31m[1m>[22m[39m
+[90m  8 |[39m 
+[36mimport[39m { 
+cn } [36mfrom[39m 
+[32m"@/lib/utils"[39
+m[33m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m
+ [90m  9 |[39m 
+type 
+[33mSlotStatus[39m 
+[33m=[39m 
+[32m"OPEN"[39m 
+[33m|[39m 
+[32m"FULL"[39m 
+[33m|[39m [32m"UNA
+VAILABLE"[39m 
+[33m|[39m [32m"CLO
+SED"[39m[33m;[39m
+ [90m 10 |[39m 
+type [33mSlot[39m 
+[33m=[39m {
+ [90m 11 |[39m   
+time[33m:[39m 
+string[33m;[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/booking/pag
+e.tsx [Client 
+Component Browser]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/booking/pag
+e.tsx [Client 
+Component SSR]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+./app/booking/page.ts
+x:7:1
+Module not found: 
+Can't resolve 
+'@/lib/utils'
+[0m [90m  5 |[39m 
+[36mimport[39m [33
+mDateCarousel[39m 
+[36mfrom[39m [32m"
+@/components/DateCaro
+usel"[39m[33m;[39m
+ [90m  6 |[39m 
+[36mimport[39m { 
+supabase } 
+[36mfrom[39m [32m"
+@/lib/supabase"[39m
+[33m;[39m
+[31m[1m>[22m[39m
+[90m  7 |[39m 
+[36mimport[39m { 
+cn } [36mfrom[39m 
+[32m"@/lib/utils"[39
+m[33m;[39m
+ [90m    |[39m [31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m
+[39m[31m[1m^[22m[
+39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39
+m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[3
+1m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m
+[1m^[22m[39m[31m[
+1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m
+^[22m[39m[31m[1m^
+[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[2
+2m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m
+ [90m  8 |[39m
+ [90m  9 |[39m 
+type 
+[33mSlotStatus[39m 
+[33m=[39m 
+[32m"OPEN"[39m 
+[33m|[39m 
+[32m"FULL"[39m 
+[33m|[39m [32m"UNA
+VAILABLE"[39m 
+[33m|[39m [32m"CLO
+SED"[39m[33m;[39m
+ [90m 10 |[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/booking/pag
+e.tsx [Client 
+Component Browser]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./app/booking/pag
+e.tsx [Client 
+Component SSR]
+    ./app/booking/pag
+e.tsx [Server 
+Component]
+
+https://nextjs.org/do
+cs/messages/module-no
+t-found
+
+
+    at <unknown> (./a
+pp/admin/queues/page.
+tsx:8:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/queues/page.
+tsx:17:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/booking/page.tsx:6
+:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/booking/page.tsx:5
+:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/layout.tsx:5
+:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/layout.tsx:3
+:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/dashboard/pa
+ge.tsx:7:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/dashboard/pa
+ge.tsx:6:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/queues/page.
+tsx:7:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/queues/page.
+tsx:16:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/dashboard/pa
+ge.tsx:6:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/dashboard/pa
+ge.tsx:5:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/queues/page.
+tsx:4:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/queues/page.
+tsx:3:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/receipts/pag
+e.tsx:4:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/receipts/pag
+e.tsx:3:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/api/queues/route.t
+s:2:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/booking/page.tsx:7
+:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/booking/page.tsx:6
+:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/dashboard/pa
+ge.tsx:9:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/dashboard/pa
+ge.tsx:10:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/queues/page.
+tsx:5:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/queues/page.
+tsx:4:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/receipts/pag
+e.tsx:6:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/admin/receipts/pag
+e.tsx:14:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/booking/page.tsx:8
+:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
+    at <unknown> (./a
+pp/booking/page.tsx:7
+:1)
+    at <unknown> (htt
+ps://nextjs.org/docs/
+messages/module-not-f
+ound)
