@@ -147,22 +147,24 @@ export default function QueueManagement() {
 
     // 4. แยก Customer Name, Service Name, Note (ใช้ , คั่น)
     processText = processText.trim().replace(/^-+|-+$/g, ''); 
-    const parts = processText.split(',').map(p => p.trim()); // <-- เปลี่ยนมาใช้ Comma
+    const parts = processText.split(',').map(p => p.trim()); // <-- ใช้ Comma
 
     // Assign based on position with fallbacks
     customerName = parts[0] || 'ลูกค้าทั่วไป';
     serviceName = parts[1] || 'บริการปกติ';
     note = parts.slice(2).join(', ') || ''; // รวมส่วนที่เหลือทั้งหมดเป็นโน้ต
 
-    // ถ้าไม่มี customerName แต่มีอย่างอื่น ให้ปรับ serviceName/note ขึ้นมา
+    // Fallback logic (ปรับให้โค้ดสะอาดขึ้น)
     if (parts.length === 1 && !parts[0]) {
         customerName = 'ลูกค้าทั่วไป';
         serviceName = 'บริการปกติ';
         note = '';
     } else if (parts.length === 1 && parts[0]) {
+        // ถ้าพิมพ์แค่ชื่อลูกค้า
         serviceName = 'บริการปกติ';
         note = '';
     } else if (parts.length === 2) {
+        // ถ้าพิมพ์แค่ลูกค้า, บริการ
         serviceName = parts[1] || 'บริการปกติ';
         note = '';
     }
@@ -204,6 +206,11 @@ export default function QueueManagement() {
       fetchQueues();
     }
   };
+  
+  const handleOpenEdit = (q: Queue) => {
+    setEditingQueue(q);
+    setIsEditModalOpen(true);
+  };
 
   // --- Group Data ---
   const groupedQueues = queues.reduce((acc, queue) => {
@@ -219,20 +226,50 @@ export default function QueueManagement() {
 
   // --- UI Components ---
   const EditModal = () => {
+    // ⭐ FIX: ใช้ Local State เพื่อไม่ให้ Re-render ขณะพิมพ์
+    const [tempData, setTempData] = useState({
+        customer_name: editingQueue?.customer_name || '',
+        service_name: editingQueue?.service_name || '',
+        note: editingQueue?.note || '',
+        start_time: editingQueue?.start_time.slice(0, 5) || '',
+        end_time: editingQueue?.end_time.slice(0, 5) || '',
+        price: editingQueue?.price || 0,
+    });
+    
+    // ตั้งค่าเริ่มต้นเมื่อ Modal ถูกเปิด
+    useEffect(() => {
+        if (editingQueue) {
+            setTempData({
+                customer_name: editingQueue.customer_name,
+                service_name: editingQueue.service_name,
+                note: editingQueue.note,
+                start_time: editingQueue.start_time.slice(0, 5),
+                end_time: editingQueue.end_time.slice(0, 5),
+                price: editingQueue.price,
+            });
+        }
+    }, [editingQueue]); // Dependency on editingQueue ensures correct initial values
+
     if (!editingQueue) return null;
 
     const handleSaveEdit = async () => {
-       await supabase.from('queues').update({
-          customer_name: editingQueue.customer_name,
-          service_name: editingQueue.service_name,
-          start_time: editingQueue.start_time,
-          end_time: editingQueue.end_time,
-          price: editingQueue.price,
-          note: editingQueue.note,
-       }).eq('id', editingQueue.id);
-       fetchQueues();
-       setIsEditModalOpen(false);
+        // ⭐ UPDATE: ใช้ tempData ที่เสถียรแล้วส่งไป Supabase
+         await supabase.from('queues').update({
+            customer_name: tempData.customer_name,
+            service_name: tempData.service_name,
+            start_time: tempData.start_time,
+            end_time: tempData.end_time,
+            price: tempData.price,
+            note: tempData.note,
+         }).eq('id', editingQueue.id);
+         fetchQueues();
+         setIsEditModalOpen(false);
     };
+    
+    const handleChange = (field: keyof typeof tempData, value: string | number) => {
+        setTempData(prev => ({ ...prev, [field]: value }));
+    };
+
 
     return (
         <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in w-full h-full">
@@ -243,24 +280,24 @@ export default function QueueManagement() {
                 <label className="text-xs font-bold text-slate-400 uppercase">ชื่อลูกค้า</label>
                 <input 
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 outline-none focus:ring-2 focus:ring-primary/30" 
-                  value={editingQueue.customer_name} 
-                  onChange={e => setEditingQueue({...editingQueue, customer_name: e.target.value})}
+                  value={tempData.customer_name} 
+                  onChange={e => handleChange('customer_name', e.target.value)}
                 />
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-400 uppercase">บริการ</label>
                 <input 
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 outline-none focus:ring-2 focus:ring-primary/30" 
-                  value={editingQueue.service_name} 
-                  onChange={e => setEditingQueue({...editingQueue, service_name: e.target.value})}
+                  value={tempData.service_name} 
+                  onChange={e => handleChange('service_name', e.target.value)}
                 />
               </div>
                <div>
                 <label className="text-xs font-bold text-slate-400 uppercase">โน้ต</label>
                 <input 
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 outline-none focus:ring-2 focus:ring-primary/30" 
-                  value={editingQueue.note} 
-                  onChange={e => setEditingQueue({...editingQueue, note: e.target.value})}
+                  value={tempData.note} 
+                  onChange={e => handleChange('note', e.target.value)}
                 />
               </div>
               <div className="flex gap-3">
@@ -269,8 +306,8 @@ export default function QueueManagement() {
                    <input 
                     type="time"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 text-center outline-none focus:ring-2 focus:ring-primary/30" 
-                    value={editingQueue.start_time} 
-                    onChange={e => setEditingQueue({...editingQueue, start_time: e.target.value})}
+                    value={tempData.start_time} 
+                    onChange={e => handleChange('start_time', e.target.value)}
                   />
                 </div>
                 <div className="flex-1">
@@ -278,8 +315,8 @@ export default function QueueManagement() {
                    <input 
                     type="time"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 text-center outline-none focus:ring-2 focus:ring-primary/30" 
-                    value={editingQueue.end_time} 
-                    onChange={e => setEditingQueue({...editingQueue, end_time: e.target.value})}
+                    value={tempData.end_time} 
+                    onChange={e => handleChange('end_time', e.target.value)}
                   />
                 </div>
               </div>
@@ -288,8 +325,8 @@ export default function QueueManagement() {
                 <input 
                   type="number"
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 font-bold text-primary text-lg outline-none focus:ring-2 focus:ring-primary/30" 
-                  value={editingQueue.price} 
-                  onChange={e => setEditingQueue({...editingQueue, price: Number(e.target.value)})}
+                  value={tempData.price} 
+                  onChange={e => handleChange('price', Number(e.target.value))}
                 />
               </div>
             </div>
@@ -330,7 +367,7 @@ export default function QueueManagement() {
         
         {/* Date Carousel */}
         <div className="py-2 w-full overflow-hidden">
-           {/* Note: เนื่องจากเราไม่มีโค้ด DateCarousel.tsx ของคุณที่ปรับแล้ว ผมจึงใช้ของเดิม แต่ถ้าใช้โค้ดผม ต้องเอา DateCarousel.tsx ตัวใหม่ล่าสุดมาใส่นะครับ */}
+           {/* Note: เนื่องจากเราไม่มีโค้ด DateCarousel.tsx ของคุณที่ปรับแล้ว ผมจึงใช้ของเดิม */}
            {/* <DateCarousel selectedDate={selectedDate} onDateSelect={handleDateSelect} className="px-4" /> */}
            <div className="px-4">
                 {/* Mockup Placeholder for DateCarousel */}
@@ -416,7 +453,7 @@ export default function QueueManagement() {
                       {/* Action Panel */}
                       {expandedId === q.id && (
                         <div className="bg-slate-50 p-2 flex justify-end gap-2 border-t border-slate-100 animate-in slide-in-from-top-2">
-                          <button onClick={(e) => { e.stopPropagation(); setEditingQueue(q); setIsEditModalOpen(true); }} 
+                          <button onClick={(e) => { e.stopPropagation(); handleOpenEdit(q); }} 
                             className="flex items-center gap-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 shadow-sm">
                             <Edit2 size={14}/> แก้ไข
                           </button>
@@ -476,7 +513,7 @@ export default function QueueManagement() {
         <div className="h-1 md:hidden"></div>
       </div>
 
-      {/* Edit Modal */}
+      {/* Edit Modal (พร้อม Local State Fix) */}
       {isEditModalOpen && <EditModal />}
     </div>
   );
