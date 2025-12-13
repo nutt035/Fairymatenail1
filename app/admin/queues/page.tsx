@@ -13,13 +13,13 @@ import {
 } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
 import DateCarousel from '@/components/DateCarousel';
-import { format, isToday, isTomorrow, parseISO } from 'date-fns';
+import { format, isToday, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
 
 // --- Types ---
 interface Queue {
   id: string;
-  customer_name: string; // This will now store the Queue Number (e.g., '01')
+  customer_name: string; // This stores the Queue Number (e.g., '01')
   service_name: string;
   date: string;
   start_time: string;
@@ -45,17 +45,17 @@ export default function QueueManagement() {
   // Ref for scrolling
   const listRef = useRef<HTMLDivElement>(null);
 
-  // --- Fetch Data ---
+  // --- Fetch Data (Order by Date then Time) ---
   const fetchQueues = async () => {
     try {
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayStr = format(new Date(), 'yyyy-MM-dd');
       const { data, error } = await supabase
         .from('queues')
         .select('*')
         .gte('date', todayStr)
         .neq('status', 'cancelled')
-        .order('date', { ascending: true })
-        .order('start_time', { ascending: true });
+        .order('date', { ascending: true }) // ✅ เรียงตามวันที่จริงก่อน
+        .order('start_time', { ascending: true }); // ✅ แล้วเรียงตามเวลา
 
       if (error) throw error;
       if (data) setQueues(data);
@@ -70,7 +70,7 @@ export default function QueueManagement() {
     fetchQueues();
   }, []);
 
-  // --- Scroll to Date ---
+  // --- Scroll to Date (Handle DateCarousel Click) ---
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     const dateStr = format(date, 'yyyy-MM-dd');
@@ -85,17 +85,18 @@ export default function QueueManagement() {
     }
   };
 
-  // --- Magic Parser (V.5 - Auto Queue Numbering, Thai Date & Flexible Price) ---
+  // --- Magic Parser (V.6 - Auto Queue, Flexible Price/Note, Auto Deposit Note) ---
   const handleMagicSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim()) return;
 
     let text = inputText.trim();
     const now = new Date();
-    let targetDate = format(now, 'yyyy-MM-dd'); // Default to today
+    let targetDate = format(now, 'yyyy-MM-dd');
     let startTime = '';
     let endTime = '';
     let price = 0;
+    let deposit = 0; // NEW: สำหรับเก็บยอดมัดจำ
     
     let serviceName = 'บริการทั่วไป';
     let note = '';
@@ -109,21 +110,29 @@ export default function QueueManagement() {
       let month = parseInt(dateMatch[2]);
       let year = parseInt(dateMatch[3]);
 
-      // แปลงปี พ.ศ. (25xx หรือ 68) เป็น ค.ศ. (20xx)
-      if (year > 2300) { // เป็นปีเต็ม (25xx)
+      // แปลงปี พ.ศ. (2568) เป็น ค.ศ. (2025)
+      if (year > 2300) { 
           year -= 543;
-      } else if (year < 100) { // เป็นปีย่อ (68)
-          year += 2000;
-          if (year < 2020) year += 100; // เช่น 90->2090, 20->2020 
-          // Note: Logic for 2-digit BE year is tricky without full BE reference, 
-          // but assuming context of current years 20xx is generally safe.
-          // Since it's BE year 68, (2568), 68 + 2000 is too far. Let's use the current method.
+      } else if (year < 100) { // เช่น ปี 68
+          // ใช้ logic ที่ปลอดภัยกว่า: ถ้าปีย่อ < 70 ให้ถือเป็น 20xx
+          // เช่น 68 -> 2068 ซึ่งผิด (ควรเป็น 2025)
+          // เนื่องจากเราอยู่ในปี 2025 (พ.ศ. 2568) ให้ปี 68 แปลงเป็น 2025
+          if (year === (now.getFullYear() % 100) || year === (now.getFullYear() % 100) + 1 ) {
+            // ถือว่าผู้ใช้พิมพ์ปีปัจจุบัน หรือ ปีถัดไป
+            year = year + 2000;
+          } else {
+             // Fallback to current year logic if date is far in the past/future
+             year = year + 2000;
+          }
       }
       
-      // Final conversion attempt for BE Year: 68 -> 2568 -> 2025
-      if (year > 2300) year -= 543;
-
-      targetDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const parsedDate = new Date(year, month - 1, day);
+      if (isNaN(parsedDate.getTime())) {
+          targetDate = format(now, 'yyyy-MM-dd'); // Fallback to today
+      } else {
+          targetDate = format(parsedDate, 'yyyy-MM-dd');
+      }
+      
       processText = processText.replace(thaiDateRegex, '');
     }
     
@@ -135,7 +144,7 @@ export default function QueueManagement() {
     if (timeMatch) {
       startTime = timeMatch[1].replace('.', ':').padStart(5, '0');
       endTime = timeMatch[2].replace('.', ':').padStart(5, '0');
-      processText = processText.replace(timeRangeRegex, '');
+      processText = processText.replace(timeRangeRegex, '').trim();
     } else {
       timeMatch = processText.match(singleTimeRegex);
       if (timeMatch) {
@@ -144,67 +153,69 @@ export default function QueueManagement() {
         const endD = new Date();
         endD.setHours(h + 1, m);
         endTime = `${String(endD.getHours()).padStart(2,'0')}:${String(endD.getMinutes()).padStart(2,'0')}`;
-        processText = processText.replace(singleTimeRegex, '');
+        processText = processText.replace(singleTimeRegex, '').trim();
       }
     }
     
-    // 3. Extract Price, Service, and Note
-    processText = processText.trim(); 
+    // 3. Extract Price & Deposit (Flexible location)
+    // หาตัวเลข 3-4 หลัก ที่อาจตามด้วย "มัดจำ" และ "ตัวเลข"
+    const depositRegex = /(มัดจำ|มัดจำ\s+)(\d{2,4})/i;
+    const priceRegex = /(\d{3,4})/; // หาตัวเลขราคา
 
-    // Extract price (3-4 digit number)
-    const priceRegex = /(\d{3,4})/;
+    // 3.1 หา Deposit ก่อน
+    const depositMatch = processText.match(depositRegex);
+    if (depositMatch) {
+        deposit = parseInt(depositMatch[2]);
+        processText = processText.replace(depositRegex, '').trim();
+    }
+    
+    // 3.2 หา Price จากส่วนที่เหลือ
     const priceMatch = processText.match(priceRegex);
     if (priceMatch) {
         price = parseInt(priceMatch[1]);
-        // แทนที่ราคาด้วย placeholder เพื่อแยก Service/Note
-        processText = processText.replace(priceRegex, 'PRICE_HOLDER').trim();
+        processText = processText.replace(priceRegex, '').trim();
     }
     
-    // Split the remaining text by space
+    // 4. แยก Service Name และ Note (สิ่งที่เหลือทั้งหมด)
     const parts = processText.split(/\s+/).filter(p => p.length > 0);
-    const priceIndex = parts.indexOf('PRICE_HOLDER');
-
+    
+    // Service Name คือคำแรกๆ (เดาจากประสบการณ์เพื่อน) ส่วนที่เหลือคือโน้ต
     if (parts.length > 0) {
-        if (priceIndex !== -1) {
-            // Service Name คือส่วนแรกก่อนราคา
-            serviceName = parts.slice(0, priceIndex).join(' ');
-            // Note คือส่วนที่เหลือทั้งหมดหลังราคา
-            note = parts.slice(priceIndex + 1).join(' ');
-        } else {
-             // ถ้าหาราคาไม่เจอ ให้ถือว่าทั้งหมดยังเป็นชื่อบริการ
-             serviceName = processText;
-             note = '';
-        }
+        serviceName = parts[0];
+        note = parts.slice(1).join(' ');
     }
-
+    
+    // 5. Auto Generate Note (มัดจำ)
+    if (deposit > 0 && price > 0) {
+        const remaining = price - deposit;
+        note = `หักมัดจำแล้ว ${formatCurrency(deposit)} เหลือจ่าย ${formatCurrency(remaining)}. ${note}`.trim();
+    } else if (deposit > 0 && price === 0) {
+        note = `รับมัดจำแล้ว ${formatCurrency(deposit)}. (ยังไม่ระบุราคารวม). ${note}`.trim();
+    }
+    
     // Final cleanup
     serviceName = serviceName.trim() || 'บริการทั่วไป';
-    note = note.trim() || '';
+    note = note.trim();
 
 
-    // 5. Calculate Queue Number (NEW LOGIC)
-    let customerName = 'ลูกค้าทั่วไป'; // Fallback
+    // 6. Calculate Queue Number (NEW LOGIC)
+    let customerName = 'ลูกค้าทั่วไป'; 
     
     if (startTime) {
       // 1. Get all existing queues for the targetDate
-      const { data: existingQueues, error: fetchError } = await supabase
+      const { data: existingQueues } = await supabase
         .from('queues')
         .select('id')
         .eq('date', targetDate)
         .neq('status', 'finished')
         .neq('status', 'cancelled');
         
-      if (fetchError) {
-          console.error("Error fetching queue count:", fetchError);
-          customerName = 'Error_Q';
-      } else {
-          // 2. Count them and add 1 for the new queue
-          const queueCount = (existingQueues || []).length + 1;
-          // 3. Format as 01, 02, 03...
-          customerName = String(queueCount).padStart(2, '0'); 
-      }
+      // 2. Count them and add 1 for the new queue
+      const queueCount = (existingQueues || []).length + 1;
+      // 3. Format as 01, 02, 03...
+      customerName = String(queueCount).padStart(2, '0'); 
 
-      // 6. Save to Supabase
+      // 7. Save to Supabase
       const { error: insertError } = await supabase.from('queues').insert([{
         customer_name: customerName, // <-- เลขคิวอัตโนมัติ
         service_name: serviceName,   
@@ -223,7 +234,7 @@ export default function QueueManagement() {
         alert("บันทึกไม่สำเร็จ: " + insertError.message);
       }
     } else {
-        alert("กรุณาระบุเวลาด้วยครับ (เช่น 13.00)");
+        alert("กรุณาระบุเวลาด้วยครับ (เช่น 13:00)");
     }
   };
 
@@ -528,7 +539,7 @@ export default function QueueManagement() {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder='เช่น 13/12/68 13:00 ต่อปกติ 339 โน้ต'
+                placeholder='เช่น 13/12/68 13:00-15:00 ต่อปกติ 339 มัดจำ 100'
                 className="w-full bg-slate-100 text-slate-800 rounded-xl px-4 py-3 text-base focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all placeholder:text-slate-400"
                 />
             </div>
@@ -541,7 +552,7 @@ export default function QueueManagement() {
             </button>
             </form>
             <div className="text-[10px] text-center text-slate-400 mt-2 font-medium">
-                รูปแบบ: <b>วันที่/เดือน/ปี เวลาเริ่ม-จบ รายการ ราคา โน้ต</b>
+                รูปแบบ: <b>วันที่/เดือน/ปี เวลาเริ่ม-จบ รายการ ราคา [มัดจำ XX] [โน้ต]</b>
             </div>
         </div>
         <div className="h-1 md:hidden"></div>
