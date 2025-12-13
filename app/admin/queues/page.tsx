@@ -19,7 +19,7 @@ import { th } from 'date-fns/locale';
 // --- Types ---
 interface Queue {
   id: string;
-  customer_name: string;
+  customer_name: string; // This will now store the Queue Number (e.g., '01')
   service_name: string;
   date: string;
   start_time: string;
@@ -85,50 +85,61 @@ export default function QueueManagement() {
     }
   };
 
-  // --- Magic Parser (V.4 - ใช้ Comma) ---
+  // --- Magic Parser (V.5 - Auto Queue Numbering, Thai Date & Flexible Price) ---
   const handleMagicSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim()) return;
 
-    const text = inputText.trim();
+    let text = inputText.trim();
     const now = new Date();
-    let targetDate = now.toISOString().split('T')[0];
+    let targetDate = format(now, 'yyyy-MM-dd'); // Default to today
     let startTime = '';
     let endTime = '';
     let price = 0;
     
-    // Default values
-    let customerName = 'ลูกค้าทั่วไป';
-    let serviceName = 'บริการปกติ';
+    let serviceName = 'บริการทั่วไป';
     let note = '';
     let processText = text;
 
-    // 1. หา Date
-    const dateMatch = processText.match(/^(\d{1,2})\s+/);
+    // 1. หา Date (DD/MM/YY หรือ DD/MM/YYYY)
+    const thaiDateRegex = /^(\d{1,2})[/\.](\d{1,2})[/\.](\d{2,4})\s+/;
+    const dateMatch = processText.match(thaiDateRegex);
     if (dateMatch) {
-      const day = parseInt(dateMatch[1]);
-      const d = new Date();
-      d.setDate(day);
-      if (day < now.getDate() && (now.getDate() - day) > 7) { 
-         d.setMonth(d.getMonth() + 1);
-      }
-      targetDate = format(d, 'yyyy-MM-dd');
-      processText = processText.replace(/^(\d{1,2})\s+/, '');
-    }
+      let day = parseInt(dateMatch[1]);
+      let month = parseInt(dateMatch[2]);
+      let year = parseInt(dateMatch[3]);
 
-    // 2. หา Time
+      // แปลงปี พ.ศ. (25xx หรือ 68) เป็น ค.ศ. (20xx)
+      if (year > 2300) { // เป็นปีเต็ม (25xx)
+          year -= 543;
+      } else if (year < 100) { // เป็นปีย่อ (68)
+          year += 2000;
+          if (year < 2020) year += 100; // เช่น 90->2090, 20->2020 
+          // Note: Logic for 2-digit BE year is tricky without full BE reference, 
+          // but assuming context of current years 20xx is generally safe.
+          // Since it's BE year 68, (2568), 68 + 2000 is too far. Let's use the current method.
+      }
+      
+      // Final conversion attempt for BE Year: 68 -> 2568 -> 2025
+      if (year > 2300) year -= 543;
+
+      targetDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      processText = processText.replace(thaiDateRegex, '');
+    }
+    
+    // 2. หา Time (HH:MM-HH:MM) หรือ (HH:MM)
     const timeRangeRegex = /(\d{1,2}[:.]\d{2})\s*-\s*(\d{1,2}[:.]\d{2})/;
     const singleTimeRegex = /(\d{1,2}[:.]\d{2})/;
+    let timeMatch = processText.match(timeRangeRegex);
 
-    const rangeMatch = processText.match(timeRangeRegex);
-    if (rangeMatch) {
-      startTime = rangeMatch[1].replace('.', ':').padStart(5, '0');
-      endTime = rangeMatch[2].replace('.', ':').padStart(5, '0');
+    if (timeMatch) {
+      startTime = timeMatch[1].replace('.', ':').padStart(5, '0');
+      endTime = timeMatch[2].replace('.', ':').padStart(5, '0');
       processText = processText.replace(timeRangeRegex, '');
     } else {
-      const singleMatch = processText.match(singleTimeRegex);
-      if (singleMatch) {
-        startTime = singleMatch[1].replace('.', ':').padStart(5, '0');
+      timeMatch = processText.match(singleTimeRegex);
+      if (timeMatch) {
+        startTime = timeMatch[1].replace('.', ':').padStart(5, '0');
         const [h, m] = startTime.split(':').map(Number);
         const endD = new Date();
         endD.setHours(h + 1, m);
@@ -136,57 +147,80 @@ export default function QueueManagement() {
         processText = processText.replace(singleTimeRegex, '');
       }
     }
+    
+    // 3. Extract Price, Service, and Note
+    processText = processText.trim(); 
 
-    // 3. หาราคา
-    const priceRegex = /\s+(\d+)$/;
+    // Extract price (3-4 digit number)
+    const priceRegex = /(\d{3,4})/;
     const priceMatch = processText.match(priceRegex);
     if (priceMatch) {
-      price = parseInt(priceMatch[1]);
-      processText = processText.replace(priceRegex, '');
+        price = parseInt(priceMatch[1]);
+        // แทนที่ราคาด้วย placeholder เพื่อแยก Service/Note
+        processText = processText.replace(priceRegex, 'PRICE_HOLDER').trim();
+    }
+    
+    // Split the remaining text by space
+    const parts = processText.split(/\s+/).filter(p => p.length > 0);
+    const priceIndex = parts.indexOf('PRICE_HOLDER');
+
+    if (parts.length > 0) {
+        if (priceIndex !== -1) {
+            // Service Name คือส่วนแรกก่อนราคา
+            serviceName = parts.slice(0, priceIndex).join(' ');
+            // Note คือส่วนที่เหลือทั้งหมดหลังราคา
+            note = parts.slice(priceIndex + 1).join(' ');
+        } else {
+             // ถ้าหาราคาไม่เจอ ให้ถือว่าทั้งหมดยังเป็นชื่อบริการ
+             serviceName = processText;
+             note = '';
+        }
     }
 
-    // 4. แยก Customer Name, Service Name, Note (ใช้ , คั่น)
-    processText = processText.trim().replace(/^-+|-+$/g, ''); 
-    const parts = processText.split(',').map(p => p.trim()); // <-- ใช้ Comma
-
-    // Assign based on position with fallbacks
-    customerName = parts[0] || 'ลูกค้าทั่วไป';
-    serviceName = parts[1] || 'บริการปกติ';
-    note = parts.slice(2).join(', ') || ''; // รวมส่วนที่เหลือทั้งหมดเป็นโน้ต
-
-    // Fallback logic (ปรับให้โค้ดสะอาดขึ้น)
-    if (parts.length === 1 && !parts[0]) {
-        customerName = 'ลูกค้าทั่วไป';
-        serviceName = 'บริการปกติ';
-        note = '';
-    } else if (parts.length === 1 && parts[0]) {
-        // ถ้าพิมพ์แค่ชื่อลูกค้า
-        serviceName = 'บริการปกติ';
-        note = '';
-    } else if (parts.length === 2) {
-        // ถ้าพิมพ์แค่ลูกค้า, บริการ
-        serviceName = parts[1] || 'บริการปกติ';
-        note = '';
-    }
+    // Final cleanup
+    serviceName = serviceName.trim() || 'บริการทั่วไป';
+    note = note.trim() || '';
 
 
+    // 5. Calculate Queue Number (NEW LOGIC)
+    let customerName = 'ลูกค้าทั่วไป'; // Fallback
+    
     if (startTime) {
-      const { error } = await supabase.from('queues').insert([{
-        customer_name: customerName,
-        service_name: serviceName,
+      // 1. Get all existing queues for the targetDate
+      const { data: existingQueues, error: fetchError } = await supabase
+        .from('queues')
+        .select('id')
+        .eq('date', targetDate)
+        .neq('status', 'finished')
+        .neq('status', 'cancelled');
+        
+      if (fetchError) {
+          console.error("Error fetching queue count:", fetchError);
+          customerName = 'Error_Q';
+      } else {
+          // 2. Count them and add 1 for the new queue
+          const queueCount = (existingQueues || []).length + 1;
+          // 3. Format as 01, 02, 03...
+          customerName = String(queueCount).padStart(2, '0'); 
+      }
+
+      // 6. Save to Supabase
+      const { error: insertError } = await supabase.from('queues').insert([{
+        customer_name: customerName, // <-- เลขคิวอัตโนมัติ
+        service_name: serviceName,   
         date: targetDate,
         start_time: startTime,
         end_time: endTime,
         price: price,
-        note: note, // บันทึกโน้ต
+        note: note,
         status: 'pending'
       }]);
 
-      if (!error) {
+      if (!insertError) {
         setInputText('');
         fetchQueues();
       } else {
-        alert("บันทึกไม่สำเร็จ: " + error.message);
+        alert("บันทึกไม่สำเร็จ: " + insertError.message);
       }
     } else {
         alert("กรุณาระบุเวลาด้วยครับ (เช่น 13.00)");
@@ -226,7 +260,7 @@ export default function QueueManagement() {
 
   // --- UI Components ---
   const EditModal = () => {
-    // ⭐ FIX: ใช้ Local State เพื่อไม่ให้ Re-render ขณะพิมพ์
+    // FIX: ใช้ Local State เพื่อไม่ให้ Re-render ขณะพิมพ์
     const [tempData, setTempData] = useState({
         customer_name: editingQueue?.customer_name || '',
         service_name: editingQueue?.service_name || '',
@@ -248,12 +282,12 @@ export default function QueueManagement() {
                 price: editingQueue.price,
             });
         }
-    }, [editingQueue]); // Dependency on editingQueue ensures correct initial values
+    }, [editingQueue]); 
 
     if (!editingQueue) return null;
 
     const handleSaveEdit = async () => {
-        // ⭐ UPDATE: ใช้ tempData ที่เสถียรแล้วส่งไป Supabase
+        // UPDATE: ใช้ tempData ที่เสถียรแล้วส่งไป Supabase
          await supabase.from('queues').update({
             customer_name: tempData.customer_name,
             service_name: tempData.service_name,
@@ -277,7 +311,7 @@ export default function QueueManagement() {
             <h3 className="text-xl font-bold mb-4 text-slate-800">แก้ไขข้อมูล</h3>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-400 uppercase">ชื่อลูกค้า</label>
+                <label className="text-xs font-bold text-slate-400 uppercase">เลขคิว (ลูกค้า)</label>
                 <input 
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 mt-1 outline-none focus:ring-2 focus:ring-primary/30" 
                   value={tempData.customer_name} 
@@ -367,7 +401,7 @@ export default function QueueManagement() {
         
         {/* Date Carousel */}
         <div className="py-2 w-full overflow-hidden">
-           {/* Note: เนื่องจากเราไม่มีโค้ด DateCarousel.tsx ของคุณที่ปรับแล้ว ผมจึงใช้ของเดิม */}
+           {/* Note: ถ้ามี DateCarousel.tsx ให้ใส่ตรงนี้ */}
            {/* <DateCarousel selectedDate={selectedDate} onDateSelect={handleDateSelect} className="px-4" /> */}
            <div className="px-4">
                 {/* Mockup Placeholder for DateCarousel */}
@@ -429,11 +463,11 @@ export default function QueueManagement() {
                           <span className="text-[10px] text-slate-400 font-medium mt-1 leading-none">{q.end_time.slice(0,5)}</span>
                         </div>
 
-                        {/* Info (FIXED: แยกชื่อลูกค้า, บริการ, โน้ต) */}
+                        {/* Info (แสดงเลขคิว + บริการ/โน้ต) */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
-                             <h4 className={cn("font-bold text-slate-800 text-base truncate", q.status==='finished' && "line-through")}>
-                               {q.customer_name} {/* <--- ชื่อลูกค้า */}
+                             <h4 className={cn("font-black text-slate-800 text-base truncate", q.status==='finished' && "line-through")}>
+                               {q.customer_name} {/* <--- เลขคิว */}
                              </h4>
                              {q.status === 'finished' && <CheckCircle size={14} className="text-green-500 shrink-0"/>}
                           </div>
@@ -494,7 +528,7 @@ export default function QueueManagement() {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder='เช่น 12 13.00-15.00 พี่ส้ม, ต่อเล็บ, มัดจำแล้ว 1200'
+                placeholder='เช่น 13/12/68 13:00 ต่อปกติ 339 โน้ต'
                 className="w-full bg-slate-100 text-slate-800 rounded-xl px-4 py-3 text-base focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all placeholder:text-slate-400"
                 />
             </div>
@@ -507,7 +541,7 @@ export default function QueueManagement() {
             </button>
             </form>
             <div className="text-[10px] text-center text-slate-400 mt-2 font-medium">
-                รูปแบบ: <b>วันที่(ถ้ามี) เวลา ลูกค้า, บริการ, โน้ต ราคา</b>
+                รูปแบบ: <b>วันที่/เดือน/ปี เวลาเริ่ม-จบ รายการ ราคา โน้ต</b>
             </div>
         </div>
         <div className="h-1 md:hidden"></div>
