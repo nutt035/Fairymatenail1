@@ -2,12 +2,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, CalendarClock, Receipt, User, X } from 'lucide-react';
+import { LayoutDashboard, CalendarClock, Receipt, User, X, Package, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
   { href: '/admin/dashboard', label: 'แดชบอร์ด', icon: LayoutDashboard },
   { href: '/admin/queues', label: 'หน้าจัดการคิว', icon: CalendarClock },
+  { href: '/admin/stock', label: 'จัดการสต็อก', icon: Package },
+  { href: '/admin/finance', label: 'บัญชีรายรับ-จ่าย', icon: Wallet },
   { href: '/admin/receipts', label: 'ใบเสร็จย้อนหลัง', icon: Receipt },
 ];
 
@@ -22,10 +24,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <>
       {/* Mobile Overlay (พื้นหลังสีดำจาง ๆ เวลากดเมนูในมือถือ) */}
-      <div 
+      <div
         className={cn(
-            "fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-200",
-            isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          "fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-200",
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         )}
         onClick={onClose}
       />
@@ -43,12 +45,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
           {/* Logo Section */}
           <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-primary/20 shadow-md">
-              <Image 
-                  src="/logo.jpg" 
-                  alt="Fairymate Logo" 
-                  fill 
-                  className="object-cover"
-              />
+            <Image
+              src="/logo.jpg"
+              alt="Fairymate Logo"
+              fill
+              className="object-cover"
+            />
           </div>
           <h1 className="text-xl font-bold text-primary tracking-tight">Fairymate.Nail</h1>
         </div>
@@ -64,8 +66,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 onClick={onClose} // ปิดเมนูเมื่อกดเลือก (ในมือถือ)
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200",
-                  isActive 
-                    ? "bg-primary/10 text-primary font-medium" 
+                  isActive
+                    ? "bg-primary/10 text-primary font-medium"
                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
                 )}
               >
@@ -78,8 +80,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         <div className="p-4 border-t border-slate-100">
           <Link href="/booking" target="_blank" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-slate-50 transition-colors">
-              <User size={20} />
-              <span className="text-sm">หน้าลูกค้าดูคิว</span>
+            <User size={20} />
+            <span className="text-sm">หน้าลูกค้าดูคิว</span>
           </Link>
         </div>
       </aside>

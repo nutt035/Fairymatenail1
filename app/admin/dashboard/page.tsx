@@ -1,11 +1,12 @@
 "use client";
-import { format, startOfMonth, endOfMonth } from "date-fns";
+import { format, startOfMonth, endOfMonth, subDays, eachDayOfInterval } from "date-fns";
+import { th } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import StatusBadge from "@/components/ui/StatusBadge";
 import {
-  Clock, Receipt, Edit2, Check, X, Loader2, CalendarDays,
+  Clock, Receipt, Edit2, Check, X, Loader2, CalendarDays, TrendingUp, TrendingDown, Wallet,
 } from "lucide-react";
 import { formatCurrency, cn } from "@/lib/utils";
 
@@ -34,6 +35,11 @@ export default function Dashboard() {
   const [goalAmount, setGoalAmount] = useState(150000);
   const [goalId, setGoalId] = useState<string | null>(null);
 
+  // Profit States (NEW)
+  const [monthlyExpenses, setMonthlyExpenses] = useState(0);
+  const [todayExpenses, setTodayExpenses] = useState(0);
+  const [weeklyData, setWeeklyData] = useState<{ date: string; income: number; expense: number }[]>([]);
+
   // UI States
   const [loading, setLoading] = useState(true);
   const [isEditingGoal, setIsEditingGoal] = useState(false);
@@ -54,6 +60,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchDashboardData();
     fetchStoreHours();
+    fetchProfitData();
   }, []);
 
   // -----------------------------
@@ -111,6 +118,73 @@ export default function Dashboard() {
       console.error("Error fetching dashboard data:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // -----------------------------
+  // Profit Data (NEW)
+  // -----------------------------
+  const fetchProfitData = async () => {
+    try {
+      const today = new Date();
+      const todayStr = format(today, 'yyyy-MM-dd');
+      const startMonth = format(startOfMonth(today), 'yyyy-MM-dd');
+      const endMonth = format(endOfMonth(today), 'yyyy-MM-dd');
+      const weekStart = format(subDays(today, 6), 'yyyy-MM-dd');
+
+      // 1) Monthly expenses
+      const { data: monthExpenses } = await supabase
+        .from('expenses')
+        .select('amount')
+        .gte('date', startMonth)
+        .lte('date', endMonth);
+
+      const monthExpTotal = monthExpenses?.reduce((sum, e) => sum + (e.amount || 0), 0) || 0;
+      setMonthlyExpenses(monthExpTotal);
+
+      // 2) Today expenses
+      const { data: todayExp } = await supabase
+        .from('expenses')
+        .select('amount')
+        .eq('date', todayStr);
+
+      const todayExpTotal = todayExp?.reduce((sum, e) => sum + (e.amount || 0), 0) || 0;
+      setTodayExpenses(todayExpTotal);
+
+      // 3) Weekly data for trend chart
+      const last7Days = eachDayOfInterval({ start: subDays(today, 6), end: today });
+      const weeklyDataArray: { date: string; income: number; expense: number }[] = [];
+
+      for (const day of last7Days) {
+        const dayStr = format(day, 'yyyy-MM-dd');
+
+        // Get income for this day
+        const { data: dayReceipts } = await supabase
+          .from('receipts')
+          .select('final_price')
+          .gte('created_at', `${dayStr}T00:00:00`)
+          .lte('created_at', `${dayStr}T23:59:59`);
+
+        const dayIncome = dayReceipts?.reduce((sum, r) => sum + (r.final_price || 0), 0) || 0;
+
+        // Get expense for this day
+        const { data: dayExpenses } = await supabase
+          .from('expenses')
+          .select('amount')
+          .eq('date', dayStr);
+
+        const dayExpense = dayExpenses?.reduce((sum, e) => sum + (e.amount || 0), 0) || 0;
+
+        weeklyDataArray.push({
+          date: format(day, 'EEE', { locale: th }),
+          income: dayIncome,
+          expense: dayExpense,
+        });
+      }
+
+      setWeeklyData(weeklyDataArray);
+    } catch (error) {
+      console.error("Error fetching profit data:", error);
     }
   };
 
@@ -385,6 +459,109 @@ export default function Dashboard() {
 
       {/* RIGHT COLUMN — STATS + STORE HOURS */}
       <div className="col-span-1 lg:col-span-5 space-y-6 pt-0 lg:pt-16">
+        {/* Profit Summary Card (NEW) */}
+        <div className={cn(
+          "rounded-[20px] p-6 shadow-lg relative overflow-hidden",
+          (todayIncome - todayExpenses) >= 0
+            ? "bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-emerald-200"
+            : "bg-gradient-to-br from-red-500 to-red-600 shadow-red-200"
+        )}>
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              {(todayIncome - todayExpenses) >= 0 ? (
+                <TrendingUp size={20} className="text-white/80" />
+              ) : (
+                <TrendingDown size={20} className="text-white/80" />
+              )}
+              <span className="text-white/80 text-xs font-bold tracking-wider uppercase">
+                กำไรวันนี้
+              </span>
+            </div>
+            <p className="text-3xl font-black text-white">
+              {loading ? "..." : formatCurrency(todayIncome - todayExpenses)}
+            </p>
+            <p className="text-xs text-white/60 mt-2">
+              รายได้ {formatCurrency(todayIncome)} • รายจ่าย {formatCurrency(todayExpenses)}
+            </p>
+          </div>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-6xl font-bold text-white/10 select-none">
+            {(todayIncome - todayExpenses) >= 0 ? '+' : '-'}
+          </div>
+        </div>
+
+        {/* Monthly Profit Card (NEW) */}
+        <div className="bg-white rounded-[20px] p-6 shadow-soft">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-xl">
+                <Wallet size={20} className="text-primary" />
+              </div>
+              <span className="font-bold text-slate-800">กำไรเดือนนี้</span>
+            </div>
+            <Link href="/admin/finance" className="text-xs text-primary font-medium hover:underline">
+              ดูรายละเอียด →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="text-center p-3 bg-emerald-50 rounded-xl">
+              <p className="text-[10px] text-emerald-600 font-medium uppercase">รายได้</p>
+              <p className="text-lg font-bold text-emerald-600">{formatCurrency(monthlyIncome)}</p>
+            </div>
+            <div className="text-center p-3 bg-red-50 rounded-xl">
+              <p className="text-[10px] text-red-500 font-medium uppercase">รายจ่าย</p>
+              <p className="text-lg font-bold text-red-500">{formatCurrency(monthlyExpenses)}</p>
+            </div>
+            <div className={cn(
+              "text-center p-3 rounded-xl",
+              (monthlyIncome - monthlyExpenses) >= 0 ? "bg-primary/10" : "bg-slate-100"
+            )}>
+              <p className="text-[10px] text-primary font-medium uppercase">กำไรสุทธิ</p>
+              <p className={cn(
+                "text-lg font-bold",
+                (monthlyIncome - monthlyExpenses) >= 0 ? "text-primary" : "text-slate-600"
+              )}>
+                {formatCurrency(monthlyIncome - monthlyExpenses)}
+              </p>
+            </div>
+          </div>
+
+          {/* Mini Trend Chart */}
+          {weeklyData.length > 0 && (
+            <div className="mt-4">
+              <p className="text-xs text-slate-400 font-medium mb-2">รายได้ 7 วันล่าสุด</p>
+              <div className="flex items-end justify-between gap-1 h-16">
+                {weeklyData.map((day, idx) => {
+                  const maxIncome = Math.max(...weeklyData.map(d => d.income), 1);
+                  const height = (day.income / maxIncome) * 100;
+                  const profit = day.income - day.expense;
+                  return (
+                    <div key={idx} className="flex-1 flex flex-col items-center gap-1">
+                      <div
+                        className={cn(
+                          "w-full rounded-t-md transition-all duration-300",
+                          profit >= 0 ? "bg-emerald-400" : "bg-red-400"
+                        )}
+                        style={{ height: `${Math.max(height, 8)}%` }}
+                        title={`รายได้: ${formatCurrency(day.income)} / รายจ่าย: ${formatCurrency(day.expense)}`}
+                      />
+                      <span className="text-[9px] text-slate-400">{day.date}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex justify-between mt-2 text-[10px] text-slate-400">
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span> กำไร
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-red-400"></span> ขาดทุน
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Today Income */}
         <div className="bg-white rounded-[20px] p-6 shadow-soft">
           <div className="flex items-center gap-4 mb-4">
