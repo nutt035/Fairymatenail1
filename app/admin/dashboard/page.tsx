@@ -368,169 +368,172 @@ export default function Dashboard() {
   // RENDER
   // -----------------------------
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
-      {/* LEFT COLUMN — TODAY QUEUES */}
-      <div className="col-span-1 lg:col-span-7 space-y-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
-            แดชบอร์ด
-          </h1>
-          <span className="bg-white border border-pink-100 text-primary px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">
-            {format(new Date(), "d MMMM yyyy")}
-          </span>
-        </div>
-
-        <div className="bg-white rounded-[20px] p-4 md:p-6 shadow-soft min-h-[400px] md:min-h-[500px]">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                <Clock size={16} className="text-primary" />
-              </div>
-              <h2 className="font-bold text-base md:text-lg">
-                คิววันนี้ ({queues.length})
-              </h2>
-            </div>
-            <Link
-              href="/admin/queues"
-              className="text-sm text-primary font-medium hover:underline hover:text-primary/80"
-            >
-              ดูทั้งหมด
-            </Link>
-          </div>
-
-          <div className="space-y-4">
-            {loading ? (
-              <div className="flex justify-center py-10">
-                <Loader2 className="animate-spin text-primary" />
-              </div>
-            ) : (
-              queues.map((q, idx) => {
-                const isNow = idx === 0 && q.status !== "finished";
-                return (
-                  <div
-                    key={q.id}
-                    className="flex items-center gap-3 md:gap-4 p-2 hover:bg-slate-50 rounded-xl transition-colors"
-                  >
-                    <div
-                      className={cn(
-                        "flex flex-col items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-xl border shrink-0",
-                        isNow
-                          ? "bg-primary border-primary text-white shadow-md shadow-primary/20"
-                          : "bg-white border-slate-100 text-slate-500"
-                      )}
-                    >
-                      {isNow && (
-                        <span className="text-[9px] md:text-[10px] font-bold mb-0.5">
-                          NOW
-                        </span>
-                      )}
-                      <span
-                        className={cn(
-                          "font-bold",
-                          isNow ? "text-base md:text-lg" : "text-xs md:text-sm"
-                        )}
-                      >
-                        {q.start_time.slice(0, 5)}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-slate-800 truncate">
-                        {q.customer_name}
-                      </h3>
-                      <p className="text-sm text-slate-400 truncate">
-                        {q.service_name}
-                      </p>
-                    </div>
-                    <div className="shrink-0">
-                      <StatusBadge status={q.status} />
-                    </div>
-                  </div>
-                );
-              })
-            )}
-            {!loading && queues.length === 0 && (
-              <p className="text-center text-slate-400 mt-10">
-                ไม่มีคิวสำหรับวันนี้
-              </p>
-            )}
-          </div>
-        </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
+          แดชบอร์ด
+        </h1>
+        <span className="bg-white border border-pink-100 text-primary px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">
+          {format(new Date(), "d MMMM yyyy", { locale: th })}
+        </span>
       </div>
 
-      {/* RIGHT COLUMN — STATS + STORE HOURS */}
-      <div className="col-span-1 lg:col-span-5 space-y-6 pt-0 lg:pt-16">
-        {/* Profit Summary Card (NEW) */}
+      {/* Top Stats Row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Today Profit */}
         <div className={cn(
-          "rounded-[20px] p-6 shadow-lg relative overflow-hidden",
+          "rounded-2xl p-4 shadow-sm relative overflow-hidden",
           (todayIncome - todayExpenses) >= 0
-            ? "bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-emerald-200"
-            : "bg-gradient-to-br from-red-500 to-red-600 shadow-red-200"
+            ? "bg-gradient-to-br from-emerald-500 to-emerald-600"
+            : "bg-gradient-to-br from-red-500 to-red-600"
         )}>
           <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-1.5 mb-1">
               {(todayIncome - todayExpenses) >= 0 ? (
-                <TrendingUp size={20} className="text-white/80" />
+                <TrendingUp size={14} className="text-white/80" />
               ) : (
-                <TrendingDown size={20} className="text-white/80" />
+                <TrendingDown size={14} className="text-white/80" />
               )}
-              <span className="text-white/80 text-xs font-bold tracking-wider uppercase">
+              <span className="text-white/80 text-[10px] font-bold uppercase">
                 กำไรวันนี้
               </span>
             </div>
-            <p className="text-3xl font-black text-white">
+            <p className="text-xl font-black text-white">
               {loading ? "..." : formatCurrency(todayIncome - todayExpenses)}
             </p>
-            <p className="text-xs text-white/60 mt-2">
-              รายได้ {formatCurrency(todayIncome)} • รายจ่าย {formatCurrency(todayExpenses)}
-            </p>
-          </div>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-6xl font-bold text-white/10 select-none">
-            {(todayIncome - todayExpenses) >= 0 ? '+' : '-'}
           </div>
         </div>
 
-        {/* Monthly Profit Card (NEW) */}
-        <div className="bg-white rounded-[20px] p-6 shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-xl">
-                <Wallet size={20} className="text-primary" />
+        {/* Today Income */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Receipt size={14} className="text-primary" />
+            <span className="text-slate-400 text-[10px] font-bold uppercase">รายได้วันนี้</span>
+          </div>
+          <p className="text-xl font-bold text-slate-800">
+            {loading ? "..." : formatCurrency(todayIncome)}
+          </p>
+        </div>
+
+        {/* Monthly Income */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Wallet size={14} className="text-primary" />
+            <span className="text-slate-400 text-[10px] font-bold uppercase">รายได้เดือนนี้</span>
+          </div>
+          <p className="text-xl font-bold text-slate-800">
+            {formatCurrency(monthlyIncome)}
+          </p>
+        </div>
+
+        {/* Net Profit */}
+        <div className={cn(
+          "rounded-2xl p-4 shadow-sm",
+          (monthlyIncome - monthlyExpenses) >= 0 ? "bg-primary/10" : "bg-slate-100"
+        )}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <TrendingUp size={14} className="text-primary" />
+            <span className="text-primary text-[10px] font-bold uppercase">กำไรเดือนนี้</span>
+          </div>
+          <p className={cn(
+            "text-xl font-bold",
+            (monthlyIncome - monthlyExpenses) >= 0 ? "text-primary" : "text-slate-600"
+          )}>
+            {formatCurrency(monthlyIncome - monthlyExpenses)}
+          </p>
+        </div>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* LEFT COLUMN — TODAY QUEUES */}
+        <div className="col-span-1 lg:col-span-7 space-y-4">
+
+          <div className="bg-white rounded-[20px] p-4 md:p-6 shadow-soft min-h-[400px] md:min-h-[500px]">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Clock size={16} className="text-primary" />
+                </div>
+                <h2 className="font-bold text-base md:text-lg">
+                  คิววันนี้ ({queues.length})
+                </h2>
               </div>
-              <span className="font-bold text-slate-800">กำไรเดือนนี้</span>
+              <Link
+                href="/admin/queues"
+                className="text-sm text-primary font-medium hover:underline hover:text-primary/80"
+              >
+                ดูทั้งหมด
+              </Link>
             </div>
-            <Link href="/admin/finance" className="text-xs text-primary font-medium hover:underline">
-              ดูรายละเอียด →
-            </Link>
-          </div>
 
-          <div className="grid grid-cols-3 gap-3 mb-4">
-            <div className="text-center p-3 bg-emerald-50 rounded-xl">
-              <p className="text-[10px] text-emerald-600 font-medium uppercase">รายได้</p>
-              <p className="text-lg font-bold text-emerald-600">{formatCurrency(monthlyIncome)}</p>
-            </div>
-            <div className="text-center p-3 bg-red-50 rounded-xl">
-              <p className="text-[10px] text-red-500 font-medium uppercase">รายจ่าย</p>
-              <p className="text-lg font-bold text-red-500">{formatCurrency(monthlyExpenses)}</p>
-            </div>
-            <div className={cn(
-              "text-center p-3 rounded-xl",
-              (monthlyIncome - monthlyExpenses) >= 0 ? "bg-primary/10" : "bg-slate-100"
-            )}>
-              <p className="text-[10px] text-primary font-medium uppercase">กำไรสุทธิ</p>
-              <p className={cn(
-                "text-lg font-bold",
-                (monthlyIncome - monthlyExpenses) >= 0 ? "text-primary" : "text-slate-600"
-              )}>
-                {formatCurrency(monthlyIncome - monthlyExpenses)}
-              </p>
+            <div className="space-y-4">
+              {loading ? (
+                <div className="flex justify-center py-10">
+                  <Loader2 className="animate-spin text-primary" />
+                </div>
+              ) : (
+                queues.map((q, idx) => {
+                  const isNow = idx === 0 && q.status !== "finished";
+                  return (
+                    <div
+                      key={q.id}
+                      className="flex items-center gap-3 md:gap-4 p-2 hover:bg-slate-50 rounded-xl transition-colors"
+                    >
+                      <div
+                        className={cn(
+                          "flex flex-col items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-xl border shrink-0",
+                          isNow
+                            ? "bg-primary border-primary text-white shadow-md shadow-primary/20"
+                            : "bg-white border-slate-100 text-slate-500"
+                        )}
+                      >
+                        {isNow && (
+                          <span className="text-[9px] md:text-[10px] font-bold mb-0.5">
+                            NOW
+                          </span>
+                        )}
+                        <span
+                          className={cn(
+                            "font-bold",
+                            isNow ? "text-base md:text-lg" : "text-xs md:text-sm"
+                          )}
+                        >
+                          {q.start_time.slice(0, 5)}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-slate-800 truncate">
+                          {q.customer_name}
+                        </h3>
+                        <p className="text-sm text-slate-400 truncate">
+                          {q.service_name}
+                        </p>
+                      </div>
+                      <div className="shrink-0">
+                        <StatusBadge status={q.status} />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+              {!loading && queues.length === 0 && (
+                <p className="text-center text-slate-400 mt-10">
+                  ไม่มีคิวสำหรับวันนี้
+                </p>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* Mini Trend Chart */}
+        {/* RIGHT COLUMN — GOAL + STORE HOURS */}
+        <div className="col-span-1 lg:col-span-5 space-y-4">
+          {/* Weekly Trend Chart */}
           {weeklyData.length > 0 && (
-            <div className="mt-4">
-              <p className="text-xs text-slate-400 font-medium mb-2">รายได้ 7 วันล่าสุด</p>
-              <div className="flex items-end justify-between gap-1 h-16">
+            <div className="bg-white rounded-2xl p-4 shadow-soft">
+              <p className="text-xs text-slate-500 font-bold uppercase mb-3">กำไร 7 วันล่าสุด</p>
+              <div className="flex items-end justify-between gap-1 h-20">
                 {weeklyData.map((day, idx) => {
                   const maxIncome = Math.max(...weeklyData.map(d => d.income), 1);
                   const height = (day.income / maxIncome) * 100;
@@ -550,7 +553,7 @@ export default function Dashboard() {
                   );
                 })}
               </div>
-              <div className="flex justify-between mt-2 text-[10px] text-slate-400">
+              <div className="flex justify-center gap-4 mt-2 text-[10px] text-slate-400">
                 <span className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-400"></span> กำไร
                 </span>
@@ -560,140 +563,190 @@ export default function Dashboard() {
               </div>
             </div>
           )}
-        </div>
 
-        {/* Today Income */}
-        <div className="bg-white rounded-[20px] p-6 shadow-soft">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-pink-50 rounded-2xl text-primary">
-              <Receipt size={24} />
-            </div>
-            <div>
-              <p className="text-xs text-slate-400 font-bold tracking-wider uppercase">
-                รายได้วันนี้
-              </p>
-              <p className="text-3xl font-bold text-slate-800">
-                {loading ? "..." : formatCurrency(todayIncome)}
-              </p>
-            </div>
-          </div>
-        </div>
+          {/* Monthly Goal */}
+          <div className="bg-primary text-white rounded-[20px] p-8 shadow-lg shadow-primary/30 relative overflow-hidden">
+            <div className="relative z-10">
+              <div className="flex justify-between items-start">
+                <p className="text-white/80 text-xs font-bold tracking-wider uppercase mb-2">
+                  เป้าหมายเดือนนี้
+                </p>
 
-        {/* Monthly Goal */}
-        <div className="bg-primary text-white rounded-[20px] p-8 shadow-lg shadow-primary/30 relative overflow-hidden">
-          <div className="relative z-10">
-            <div className="flex justify-between items-start">
-              <p className="text-white/80 text-xs font-bold tracking-wider uppercase mb-2">
-                เป้าหมายเดือนนี้
-              </p>
-
-              {!isEditingGoal ? (
-                <button
-                  onClick={startEditing}
-                  className="p-1.5 bg-white/10 hover:bg白/20 rounded-lg text-white/80 hover:text-white"
-                >
-                  <Edit2 size={14} />
-                </button>
-              ) : (
-                <div className="flex gap-2">
+                {!isEditingGoal ? (
                   <button
-                    onClick={handleSaveGoal}
-                    className="p-1.5 bg-white text-primary rounded-lg hover:bg-white/90"
+                    onClick={startEditing}
+                    className="p-1.5 bg-white/10 hover:bg白/20 rounded-lg text-white/80 hover:text-white"
                   >
-                    <Check size={14} />
+                    <Edit2 size={14} />
                   </button>
-                  <button
-                    onClick={() => setIsEditingGoal(false)}
-                    className="p-1.5 bg-white/10 text-white rounded-lg hover:bg-white/20"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-wrap items-end gap-2 mb-4 min-h-[40px]">
-              <span className="text-3xl md:text-4xl font-bold">
-                {loading ? "..." : formatCurrency(monthlyIncome)}
-              </span>
-
-              <span className="text-white/60 mb-1 text-sm md:text-base flex items-center gap-1">
-                /
-                {isEditingGoal ? (
-                  <input
-                    type="number"
-                    value={tempGoal}
-                    onChange={(e) => setTempGoal(e.target.value)}
-                    className="w-24 bg-white/20 border-b border-white text-white px-1 py-0.5 font-bold"
-                  />
                 ) : (
-                  <span>
-                    {loading ? "..." : (goalAmount / 1000).toFixed(0) + "k"}
-                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleSaveGoal}
+                      className="p-1.5 bg-white text-primary rounded-lg hover:bg-white/90"
+                    >
+                      <Check size={14} />
+                    </button>
+                    <button
+                      onClick={() => setIsEditingGoal(false)}
+                      className="p-1.5 bg-white/10 text-white rounded-lg hover:bg-white/20"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
                 )}
-              </span>
-            </div>
+              </div>
 
-            <div className="h-2 bg-black/20 rounded-full overflow-hidden mb-4">
-              <div
-                className="h-full bg-white rounded-full transition-all duration-700"
-                style={{ width: `${progressPercent}%` }}
-              ></div>
-            </div>
-          </div>
+              <div className="flex flex-wrap items-end gap-2 mb-4 min-h-[40px]">
+                <span className="text-3xl md:text-4xl font-bold">
+                  {loading ? "..." : formatCurrency(monthlyIncome)}
+                </span>
 
-          <div className="absolute right-6 top-1/2 -translate-y-1/2 text-7xl md:text-8xl font-bold text-white/10 select-none">
-            {progressPercent}%
-          </div>
-        </div>
-
-        {/* CARD 1: Weekly store hours */}
-        <div className="bg-white rounded-[20px] p-6 shadow-soft">
-          <h2 className="font-bold text-lg mb-4">ตั้งเวลาเปิด–ปิดร้าน (ประจำสัปดาห์)</h2>
-
-          {loadingStoreHours ? (
-            <div className="flex justify-center py-6">
-              <Loader2 className="animate-spin text-primary" />
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {storeHours.map((day) => (
-                <div
-                  key={day.weekday}
-                  className="flex items-center gap-3 text-sm"
-                >
-                  <span className="w-20 text-slate-600 font-medium">
-                    {weekdayNames[day.weekday]}
-                  </span>
-
-                  {day.is_closed ? (
-                    <span className="text-slate-400 italic flex-1">
-                      ปิดร้านทั้งวัน
-                    </span>
+                <span className="text-white/60 mb-1 text-sm md:text-base flex items-center gap-1">
+                  /
+                  {isEditingGoal ? (
+                    <input
+                      type="number"
+                      value={tempGoal}
+                      onChange={(e) => setTempGoal(e.target.value)}
+                      className="w-24 bg-white/20 border-b border-white text-white px-1 py-0.5 font-bold"
+                    />
                   ) : (
-                    <div className="flex items-center gap-2 flex-1">
+                    <span>
+                      {loading ? "..." : (goalAmount / 1000).toFixed(0) + "k"}
+                    </span>
+                  )}
+                </span>
+              </div>
+
+              <div className="h-2 bg-black/20 rounded-full overflow-hidden mb-4">
+                <div
+                  className="h-full bg-white rounded-full transition-all duration-700"
+                  style={{ width: `${progressPercent}%` }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 text-7xl md:text-8xl font-bold text-white/10 select-none">
+              {progressPercent}%
+            </div>
+          </div>
+
+          {/* CARD 1: Weekly store hours */}
+          <div className="bg-white rounded-[20px] p-6 shadow-soft">
+            <h2 className="font-bold text-lg mb-4">ตั้งเวลาเปิด–ปิดร้าน (ประจำสัปดาห์)</h2>
+
+            {loadingStoreHours ? (
+              <div className="flex justify-center py-6">
+                <Loader2 className="animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {storeHours.map((day) => (
+                  <div
+                    key={day.weekday}
+                    className="flex items-center gap-3 text-sm"
+                  >
+                    <span className="w-20 text-slate-600 font-medium">
+                      {weekdayNames[day.weekday]}
+                    </span>
+
+                    {day.is_closed ? (
+                      <span className="text-slate-400 italic flex-1">
+                        ปิดร้านทั้งวัน
+                      </span>
+                    ) : (
+                      <div className="flex items-center gap-2 flex-1">
+                        <input
+                          type="time"
+                          value={day.open_time || ""}
+                          onChange={(e) =>
+                            updateLocalTime(
+                              day.weekday,
+                              "open_time",
+                              e.target.value
+                            )
+                          }
+                          className="border rounded-lg px-2 py-1 text-xs"
+                        />
+                        <span className="text-slate-400">–</span>
+                        <input
+                          type="time"
+                          value={day.close_time || ""}
+                          onChange={(e) =>
+                            updateLocalTime(
+                              day.weekday,
+                              "close_time",
+                              e.target.value
+                            )
+                          }
+                          className="border rounded-lg px-2 py-1 text-xs"
+                        />
+                      </div>
+                    )}
+
+                    <button
+                      onClick={() => toggleClosed(day.weekday)}
+                      className={cn(
+                        "px-3 py-1 rounded-lg text-xs font-medium",
+                        day.is_closed
+                          ? "bg-primary text-white"
+                          : "bg-slate-100 text-slate-600"
+                      )}
+                    >
+                      {day.is_closed ? "เปิดร้าน" : "ปิดร้าน"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button
+              onClick={saveStoreHours}
+              className="mt-5 w-full bg-primary text-white py-2.5 rounded-xl font-bold shadow hover:bg-primary/90"
+            >
+              บันทึกเวลาเปิด–ปิดประจำสัปดาห์
+            </button>
+          </div>
+
+          {/* CARD 2: Special hours */}
+          <div className="bg-white rounded-[20px] p-6 shadow-soft">
+            <h2 className="font-bold text-lg mb-3">ตั้งเวลาเปิด–ปิดร้านพิเศษ (รายวัน)</h2>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <CalendarDays className="w-4 h-4 text-primary" />
+                <input
+                  type="date"
+                  className="border rounded-lg px-3 py-1.5 text-sm flex-1"
+                  value={exceptionDate}
+                  onChange={(e) => handleExceptionDateChange(e.target.value)}
+                />
+              </div>
+
+              {loadingException ? (
+                <div className="flex justify-center py-4">
+                  <Loader2 className="animate-spin text-primary" />
+                </div>
+              ) : (
+                <>
+                  {!exceptionIsClosed && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="w-14 text-slate-600">เวลา</span>
                       <input
                         type="time"
-                        value={day.open_time || ""}
+                        value={exceptionOpenTime}
                         onChange={(e) =>
-                          updateLocalTime(
-                            day.weekday,
-                            "open_time",
-                            e.target.value
-                          )
+                          setExceptionOpenTime(e.target.value)
                         }
                         className="border rounded-lg px-2 py-1 text-xs"
                       />
                       <span className="text-slate-400">–</span>
                       <input
                         type="time"
-                        value={day.close_time || ""}
+                        value={exceptionCloseTime}
                         onChange={(e) =>
-                          updateLocalTime(
-                            day.weekday,
-                            "close_time",
-                            e.target.value
-                          )
+                          setExceptionCloseTime(e.target.value)
                         }
                         className="border rounded-lg px-2 py-1 text-xs"
                       />
@@ -701,97 +754,30 @@ export default function Dashboard() {
                   )}
 
                   <button
-                    onClick={() => toggleClosed(day.weekday)}
+                    onClick={() =>
+                      setExceptionIsClosed((prev) => !prev)
+                    }
                     className={cn(
                       "px-3 py-1 rounded-lg text-xs font-medium",
-                      day.is_closed
+                      exceptionIsClosed
                         ? "bg-primary text-white"
                         : "bg-slate-100 text-slate-600"
                     )}
                   >
-                    {day.is_closed ? "เปิดร้าน" : "ปิดร้าน"}
+                    {exceptionIsClosed ? "เปิดร้านวันนี้" : "ปิดร้านทั้งวัน"}
                   </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <button
-            onClick={saveStoreHours}
-            className="mt-5 w-full bg-primary text-white py-2.5 rounded-xl font-bold shadow hover:bg-primary/90"
-          >
-            บันทึกเวลาเปิด–ปิดประจำสัปดาห์
-          </button>
-        </div>
-
-        {/* CARD 2: Special hours */}
-        <div className="bg-white rounded-[20px] p-6 shadow-soft">
-          <h2 className="font-bold text-lg mb-3">ตั้งเวลาเปิด–ปิดร้านพิเศษ (รายวัน)</h2>
-
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <CalendarDays className="w-4 h-4 text-primary" />
-              <input
-                type="date"
-                className="border rounded-lg px-3 py-1.5 text-sm flex-1"
-                value={exceptionDate}
-                onChange={(e) => handleExceptionDateChange(e.target.value)}
-              />
+                </>
+              )}
             </div>
 
-            {loadingException ? (
-              <div className="flex justify-center py-4">
-                <Loader2 className="animate-spin text-primary" />
-              </div>
-            ) : (
-              <>
-                {!exceptionIsClosed && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="w-14 text-slate-600">เวลา</span>
-                    <input
-                      type="time"
-                      value={exceptionOpenTime}
-                      onChange={(e) =>
-                        setExceptionOpenTime(e.target.value)
-                      }
-                      className="border rounded-lg px-2 py-1 text-xs"
-                    />
-                    <span className="text-slate-400">–</span>
-                    <input
-                      type="time"
-                      value={exceptionCloseTime}
-                      onChange={(e) =>
-                        setExceptionCloseTime(e.target.value)
-                      }
-                      className="border rounded-lg px-2 py-1 text-xs"
-                    />
-                  </div>
-                )}
-
-                <button
-                  onClick={() =>
-                    setExceptionIsClosed((prev) => !prev)
-                  }
-                  className={cn(
-                    "px-3 py-1 rounded-lg text-xs font-medium",
-                    exceptionIsClosed
-                      ? "bg-primary text-white"
-                      : "bg-slate-100 text-slate-600"
-                  )}
-                >
-                  {exceptionIsClosed ? "เปิดร้านวันนี้" : "ปิดร้านทั้งวัน"}
-                </button>
-              </>
-            )}
+            <button
+              onClick={saveException}
+              disabled={savingException}
+              className="mt-5 w-full bg-primary text-white py-2.5 rounded-xl font-bold shadow hover:bg-primary/90 disabled:opacity-60"
+            >
+              {savingException ? "กำลังบันทึก..." : "บันทึกเวลาเปิด–ปิดร้านพิเศษ"}
+            </button>
           </div>
-
-          <button
-            onClick={saveException}
-            disabled={savingException}
-            className="mt-5 w-full bg-primary text-white py-2.5 rounded-xl font-bold shadow hover:bg-primary/90 disabled:opacity-60"
-          >
-            {savingException ? "กำลังบันทึก..." : "บันทึกเวลาเปิด–ปิดร้านพิเศษ"}
-          </button>
         </div>
       </div>
     </div>

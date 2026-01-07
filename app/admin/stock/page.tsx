@@ -39,16 +39,6 @@ const STOCK_CATEGORIES = [
     'อื่นๆ',
 ];
 
-// Mock data for initial display (will be replaced by Supabase data)
-const MOCK_STOCK: StockItem[] = [
-    { id: '1', name: 'สีเจล OPI #01 แดง', quantity: 5, unit: 'ขวด', min_quantity: 3, cost_per_unit: 350, category: 'สีเจล' },
-    { id: '2', name: 'สีเจล OPI #02 ชมพู', quantity: 2, unit: 'ขวด', min_quantity: 3, cost_per_unit: 350, category: 'สีเจล' },
-    { id: '3', name: 'ผงอะคริลิค ขาว', quantity: 10, unit: 'กระปุก', min_quantity: 5, cost_per_unit: 180, category: 'อะคริลิค/ต่อเล็บ' },
-    { id: '4', name: 'หัว Drill ทราย #80', quantity: 15, unit: 'ชิ้น', min_quantity: 10, cost_per_unit: 45, category: 'อุปกรณ์' },
-    { id: '5', name: 'สำลีก้อน', quantity: 3, unit: 'ถุง', min_quantity: 5, cost_per_unit: 35, category: 'วัสดุสิ้นเปลือง' },
-    { id: '6', name: 'สติ๊กเกอร์ดอกไม้', quantity: 8, unit: 'แผ่น', min_quantity: 5, cost_per_unit: 25, category: 'สติ๊กเกอร์/อาร์ต' },
-];
-
 export default function StockManagement() {
     const [stockItems, setStockItems] = useState<StockItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -69,8 +59,9 @@ export default function StockManagement() {
         category: 'อื่นๆ',
     });
 
-    // Fetch stock items
+    // Fetch stock items from real database
     const fetchStock = async () => {
+        setLoading(true);
         try {
             const { data, error } = await supabase
                 .from('stock_items')
@@ -78,14 +69,14 @@ export default function StockManagement() {
                 .order('name');
 
             if (error) {
-                console.log('Using mock data (table may not exist yet)');
-                setStockItems(MOCK_STOCK);
-            } else if (data) {
-                setStockItems(data.length > 0 ? data : MOCK_STOCK);
+                console.error('Error fetching stock:', error);
+                setStockItems([]);
+            } else {
+                setStockItems(data || []);
             }
         } catch (err) {
             console.error('Error fetching stock:', err);
-            setStockItems(MOCK_STOCK);
+            setStockItems([]);
         } finally {
             setLoading(false);
         }

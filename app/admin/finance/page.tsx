@@ -51,15 +51,6 @@ const EXPENSE_CATEGORIES: CategoryConfig[] = [
     { name: 'อื่นๆ', icon: '📝', color: 'text-slate-600', bgColor: 'bg-slate-100' },
 ];
 
-// Mock expenses
-const MOCK_EXPENSES: Expense[] = [
-    { id: '1', amount: 5000, category: 'ค่าเช่า', description: 'ค่าเช่าร้าน เดือน ม.ค.', date: '2026-01-01' },
-    { id: '2', amount: 1200, category: 'ค่าน้ำ-ไฟ', description: 'ค่าไฟฟ้า', date: '2026-01-05' },
-    { id: '3', amount: 2500, category: 'ซื้อของใช้', description: 'สีเจล 10 ขวด', date: '2026-01-03' },
-    { id: '4', amount: 350, category: 'ค่าเดินทาง', description: 'น้ำมันรถ', date: '2026-01-06' },
-    { id: '5', amount: 500, category: 'ค่าโฆษณา', description: 'Boost โพสต์ FB', date: '2026-01-07' },
-];
-
 export default function FinanceManagement() {
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [income, setIncome] = useState(0);
@@ -84,7 +75,7 @@ export default function FinanceManagement() {
         date: format(new Date(), 'yyyy-MM-dd'),
     });
 
-    // Fetch data
+    // Fetch data from real database
     const fetchData = async () => {
         setLoading(true);
         const startDate = format(startOfMonth(viewMonth), 'yyyy-MM-dd');
@@ -101,7 +92,7 @@ export default function FinanceManagement() {
             const totalIncome = receipts?.reduce((sum, r) => sum + (r.final_price || 0), 0) || 0;
             setIncome(totalIncome);
 
-            // Fetch expenses
+            // Fetch expenses from real database
             const { data: expenseData, error } = await supabase
                 .from('expenses')
                 .select('*')
@@ -110,10 +101,10 @@ export default function FinanceManagement() {
                 .order('date', { ascending: false });
 
             if (error) {
-                console.log('Using mock expenses (table may not exist yet)');
-                setExpenses(MOCK_EXPENSES);
-            } else if (expenseData) {
-                setExpenses(expenseData.length > 0 ? expenseData : MOCK_EXPENSES);
+                console.error('Error fetching expenses:', error);
+                setExpenses([]);
+            } else {
+                setExpenses(expenseData || []);
             }
 
             // Fetch stock costs (materials used this month)
@@ -161,7 +152,7 @@ export default function FinanceManagement() {
 
         } catch (err) {
             console.error('Error fetching data:', err);
-            setExpenses(MOCK_EXPENSES);
+            setExpenses([]);
         } finally {
             setLoading(false);
         }

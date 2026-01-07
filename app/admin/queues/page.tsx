@@ -14,7 +14,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { format, isToday, parseISO, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
+import { format, isToday, parseISO, startOfMonth, endOfMonth, addMonths, subMonths, eachDayOfInterval, isSameDay, isSameMonth } from 'date-fns';
 import { th } from 'date-fns/locale';
 
 // --- Types ---
@@ -413,13 +413,13 @@ export default function QueueManagement() {
               {formatCurrency(totalSelectedDate)}
             </p>
             <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-              (รวมทุกคิวในวันนี้)
+              (รวมทุกคิวในวันที่เลือก)
             </p>
           </div>
         </div>
 
-        {/* Month Navigation (NEW) */}
-        <div className="py-3 px-4 w-full">
+        {/* Month Navigation */}
+        <div className="py-2 px-4 w-full border-b border-slate-50">
           <div className="flex items-center justify-between gap-2">
             {/* Previous Month */}
             <button
@@ -449,11 +449,79 @@ export default function QueueManagement() {
 
             {/* Today Button */}
             <button
-              onClick={() => setViewMonth(new Date())}
+              onClick={() => {
+                setViewMonth(new Date());
+                setSelectedDate(new Date());
+              }}
               className="px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-md shadow-primary/20 hover:bg-primary/90 transition-colors"
             >
               วันนี้
             </button>
+          </div>
+        </div>
+
+        {/* Day Picker Carousel (NEW) */}
+        <div className="py-2 px-2 w-full overflow-hidden">
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+            {eachDayOfInterval({
+              start: startOfMonth(viewMonth),
+              end: endOfMonth(viewMonth)
+            }).map((day) => {
+              const dayStr = format(day, 'yyyy-MM-dd');
+              const hasQueues = queues.some(q => q.date === dayStr);
+              const isSelected = isSameDay(day, selectedDate);
+              const isTodayDay = isToday(day);
+              const dayQueuesCount = queues.filter(q => q.date === dayStr).length;
+
+              return (
+                <button
+                  key={dayStr}
+                  onClick={() => {
+                    setSelectedDate(day);
+                    // Scroll to the date section
+                    const element = document.getElementById(`date-section-${dayStr}`);
+                    if (element && listRef.current) {
+                      const topPos = element.offsetTop - 10;
+                      listRef.current.scrollTo({
+                        top: topPos,
+                        behavior: 'smooth'
+                      });
+                    }
+                  }}
+                  className={cn(
+                    "flex flex-col items-center justify-center min-w-[48px] h-[60px] rounded-xl transition-all duration-200 shrink-0",
+                    isSelected
+                      ? "bg-primary text-white shadow-lg shadow-primary/30"
+                      : isTodayDay
+                        ? "bg-primary/10 text-primary border-2 border-primary/30"
+                        : hasQueues
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          : "bg-slate-50 text-slate-400 hover:bg-slate-100"
+                  )}
+                >
+                  <span className={cn(
+                    "text-[10px] font-medium uppercase",
+                    isSelected ? "text-white/80" : ""
+                  )}>
+                    {format(day, 'EEE', { locale: th }).slice(0, 2)}
+                  </span>
+                  <span className={cn(
+                    "text-lg font-bold",
+                    isSelected ? "text-white" : ""
+                  )}>
+                    {format(day, 'd')}
+                  </span>
+                  {hasQueues && (
+                    <span className={cn(
+                      "text-[8px] font-bold",
+                      isSelected ? "text-white/80" : "text-emerald-600"
+                    )}>
+                      {dayQueuesCount} คิว
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
