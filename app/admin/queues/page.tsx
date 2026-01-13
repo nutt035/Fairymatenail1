@@ -56,6 +56,8 @@ export default function QueueManagement() {
       const startDate = format(startOfMonth(viewMonth), 'yyyy-MM-dd');
       const endDate = format(endOfMonth(viewMonth), 'yyyy-MM-dd');
 
+      console.log('🔍 Fetching queues for:', startDate, 'to', endDate);
+
       const { data, error } = await supabase
         .from('queues')
         .select('*')
@@ -64,6 +66,8 @@ export default function QueueManagement() {
         .neq('status', 'cancelled')
         .order('date', { ascending: true }) // ✅ เรียงตามวันที่จริงก่อน
         .order('start_time', { ascending: true }); // ✅ แล้วเรียงตามเวลา
+
+      console.log('📦 Query result:', { data, error });
 
       if (error) throw error;
       if (data) setQueues(data);
@@ -224,7 +228,7 @@ export default function QueueManagement() {
       customerName = String(queueCount).padStart(2, '0');
 
       // 7. Save to Supabase
-      const { error: insertError } = await supabase.from('queues').insert([{
+      const insertData = {
         customer_name: customerName, // <-- เลขคิวอัตโนมัติ
         service_name: serviceName,
         date: targetDate,
@@ -233,12 +237,22 @@ export default function QueueManagement() {
         price: price,
         note: note,
         status: 'pending'
-      }]);
+      };
+
+      console.log('📝 Inserting queue:', insertData);
+
+      const { data: insertedData, error: insertError } = await supabase
+        .from('queues')
+        .insert([insertData])
+        .select();
+
+      console.log('✅ Insert result:', { insertedData, insertError });
 
       if (!insertError) {
         setInputText('');
         fetchQueues();
       } else {
+        console.error('❌ Insert error:', insertError);
         alert("บันทึกไม่สำเร็จ: " + insertError.message);
       }
     } else {
@@ -400,7 +414,7 @@ export default function QueueManagement() {
     <div className="flex flex-col h-[100dvh] w-full max-w-[100vw] overflow-x-hidden bg-[#F8F9FA] relative">
 
       {/* 1. Header + Month Navigation */}
-      <div className="bg-white shadow-sm z-30 shrink-0 w-full">
+      <div className="bg-white shadow-sm z-30 shrink-0 w-600px">
         <div className="px-5 pt-4 pb-2 flex justify-between items-center border-b border-slate-50 bg-white">
           <div>
             <h1 className="text-sm font-bold text-slate-500 flex items-center gap-1 uppercase tracking-wide">
@@ -460,9 +474,9 @@ export default function QueueManagement() {
           </div>
         </div>
 
-        {/* Day Picker Carousel (NEW) */}
-        <div className="py-2 px-2 w-full overflow-hidden">
-          <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+        {/* Day Picker Carousel - Full Month (scroll to see more) */}
+        <div className="py-2 px-3 max-w-6xl overflow-x-auto no-scrollbar">
+          <div className="flex gap-3 pb-2" style={{ width: 'max-content' }}>
             {eachDayOfInterval({
               start: startOfMonth(viewMonth),
               end: endOfMonth(viewMonth)
@@ -478,7 +492,6 @@ export default function QueueManagement() {
                   key={dayStr}
                   onClick={() => {
                     setSelectedDate(day);
-                    // Scroll to the date section
                     const element = document.getElementById(`date-section-${dayStr}`);
                     if (element && listRef.current) {
                       const topPos = element.offsetTop - 10;
@@ -489,31 +502,31 @@ export default function QueueManagement() {
                     }
                   }}
                   className={cn(
-                    "flex flex-col items-center justify-center min-w-[48px] h-[60px] rounded-xl transition-all duration-200 shrink-0",
+                    "flex flex-col items-center justify-center min-w-[90px] h-[85px] rounded-xl border transition-all duration-200 shrink-0",
                     isSelected
-                      ? "bg-primary text-white shadow-lg shadow-primary/30"
+                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/30"
                       : isTodayDay
-                        ? "bg-primary/10 text-primary border-2 border-primary/30"
+                        ? "bg-primary/10 border-primary/30 text-primary"
                         : hasQueues
-                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                          : "bg-slate-50 text-slate-400 hover:bg-slate-100"
+                          ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                          : "bg-white border-slate-100 text-slate-400 hover:border-primary/30"
                   )}
                 >
                   <span className={cn(
-                    "text-[10px] font-medium uppercase",
+                    "text-xs font-medium uppercase",
                     isSelected ? "text-white/80" : ""
                   )}>
                     {format(day, 'EEE', { locale: th }).slice(0, 2)}
                   </span>
                   <span className={cn(
-                    "text-lg font-bold",
+                    "text-2xl font-bold mt-0.5",
                     isSelected ? "text-white" : ""
                   )}>
                     {format(day, 'd')}
                   </span>
                   {hasQueues && (
                     <span className={cn(
-                      "text-[8px] font-bold",
+                      "text-[10px] font-bold mt-1",
                       isSelected ? "text-white/80" : "text-emerald-600"
                     )}>
                       {dayQueuesCount} คิว
