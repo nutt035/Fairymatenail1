@@ -14,7 +14,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { format, isToday, parseISO, startOfMonth, endOfMonth, addMonths, subMonths, eachDayOfInterval, isSameDay, isSameMonth } from 'date-fns';
+import { format, isToday, parseISO, startOfMonth, endOfMonth, addMonths, subMonths, eachDayOfInterval, isSameDay, isSameMonth, isThisMonth } from 'date-fns';
 import { th } from 'date-fns/locale';
 
 // --- Types ---
@@ -66,16 +66,21 @@ export default function QueueManagement() {
       if (allData && allData.length > 0) {
         const startDate = format(startOfMonth(viewMonth), 'yyyy-MM-dd');
         const endDate = format(endOfMonth(viewMonth), 'yyyy-MM-dd');
+        const isCurrentMonth = isThisMonth(viewMonth);
 
-        console.log('📅 Filtering for month:', startDate, 'to', endDate);
+        console.log('📅 Filtering for month:', startDate, 'to', endDate, 'isCurrentMonth:', isCurrentMonth);
 
         // Filter manually to debug
         const filteredData = allData.filter(q => {
           const qDate = q.date;
           const inRange = qDate >= startDate && qDate <= endDate;
           const notCancelled = q.status !== 'cancelled';
-          console.log(`  - ${q.date} | status: ${q.status} | inRange: ${inRange} | notCancelled: ${notCancelled}`);
-          return inRange && notCancelled;
+
+          // เดือนปัจจุบัน: ซ่อนคิวที่จบงานแล้ว / เดือนก่อนๆ: แสดงทั้งหมดเป็น History
+          const notFinished = isCurrentMonth ? q.status !== 'finished' : true;
+
+          console.log(`  - ${q.date} | status: ${q.status} | inRange: ${inRange} | show: ${notCancelled && notFinished}`);
+          return inRange && notCancelled && notFinished;
         });
 
         console.log('✅ Filtered result:', filteredData);
@@ -272,7 +277,36 @@ export default function QueueManagement() {
 
   // --- Actions ---
   const handleStatusChange = async (id: string, newStatus: string) => {
+    // 1. อัปเดต status ของคิว
     await supabase.from('queues').update({ status: newStatus }).eq('id', id);
+
+    // 2. ถ้ากดจบงาน (finished) ให้สร้าง Receipt อัตโนมัติ
+    if (newStatus === 'finished') {
+      const queue = queues.find(q => q.id === id);
+      if (queue) {
+        // สร้างเลข Invoice อัตโนมัติ
+        const invNo = `INV-${Date.now().toString().slice(-6)}`;
+
+        const newReceipt = {
+          queue_id: queue.id,
+          customer_name: queue.customer_name,
+          service_name: queue.service_name,
+          original_price: queue.price,
+          discount: 0,
+          final_price: queue.price,
+          invoice_no: invNo
+        };
+
+        const { error } = await supabase.from('receipts').insert([newReceipt]);
+        if (error) {
+          console.error('❌ Error creating receipt:', error);
+          alert('สร้างใบเสร็จไม่สำเร็จ: ' + error.message);
+        } else {
+          console.log('✅ Receipt created automatically for queue:', queue.customer_name);
+        }
+      }
+    }
+
     fetchQueues();
     setExpandedId(null);
   };
