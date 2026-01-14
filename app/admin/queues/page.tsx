@@ -52,25 +52,38 @@ export default function QueueManagement() {
   // --- Fetch Data (Order by Date then Time) ---
   const fetchQueues = async () => {
     try {
-      // Use viewMonth to determine date range
-      const startDate = format(startOfMonth(viewMonth), 'yyyy-MM-dd');
-      const endDate = format(endOfMonth(viewMonth), 'yyyy-MM-dd');
+      // DEBUG: ดึงข้อมูลทั้งหมดก่อนเพื่อ Debug
+      console.log('🔍 DEBUG: Fetching ALL queues without any filter...');
 
-      console.log('🔍 Fetching queues for:', startDate, 'to', endDate);
-
-      const { data, error } = await supabase
+      const { data: allData, error: allError } = await supabase
         .from('queues')
-        .select('*')
-        .gte('date', startDate)
-        .lte('date', endDate)
-        .neq('status', 'cancelled')
-        .order('date', { ascending: true }) // ✅ เรียงตามวันที่จริงก่อน
-        .order('start_time', { ascending: true }); // ✅ แล้วเรียงตามเวลา
+        .select('*');
 
-      console.log('📦 Query result:', { data, error });
+      console.log('📦 ALL DATA in queues table:', allData);
+      console.log('❌ Error if any:', allError);
 
-      if (error) throw error;
-      if (data) setQueues(data);
+      // ถ้ามีข้อมูล ลอง filter ตามเดือน
+      if (allData && allData.length > 0) {
+        const startDate = format(startOfMonth(viewMonth), 'yyyy-MM-dd');
+        const endDate = format(endOfMonth(viewMonth), 'yyyy-MM-dd');
+
+        console.log('📅 Filtering for month:', startDate, 'to', endDate);
+
+        // Filter manually to debug
+        const filteredData = allData.filter(q => {
+          const qDate = q.date;
+          const inRange = qDate >= startDate && qDate <= endDate;
+          const notCancelled = q.status !== 'cancelled';
+          console.log(`  - ${q.date} | status: ${q.status} | inRange: ${inRange} | notCancelled: ${notCancelled}`);
+          return inRange && notCancelled;
+        });
+
+        console.log('✅ Filtered result:', filteredData);
+        setQueues(filteredData);
+      } else {
+        console.log('⚠️ No data found in queues table at all!');
+        setQueues([]);
+      }
     } catch (err) {
       console.error('Error fetching queues:', err);
     } finally {
@@ -122,20 +135,17 @@ export default function QueueManagement() {
       let month = parseInt(dateMatch[2]);
       let year = parseInt(dateMatch[3]);
 
-      // แปลงปี พ.ศ. (2568) เป็น ค.ศ. (2025)
+      // แปลงปี พ.ศ. เป็น ค.ศ.
+      // กรณี 1: ถ้าปี > 2300 (เช่น 2568, 2569) = พ.ศ. แบบเต็ม -> ลบ 543
+      // กรณี 2: ถ้าปี < 100 (เช่น 68, 69) = พ.ศ. แบบย่อ -> แปลงเป็น 25xx แล้วลบ 543
       if (year > 2300) {
+        // พ.ศ. แบบเต็ม เช่น 2568 -> 2025
         year -= 543;
-      } else if (year < 100) { // เช่น ปี 68
-        // ใช้ logic ที่ปลอดภัยกว่า: ถ้าปีย่อ < 70 ให้ถือเป็น 20xx
-        // เช่น 68 -> 2068 ซึ่งผิด (ควรเป็น 2025)
-        // เนื่องจากเราอยู่ในปี 2025 (พ.ศ. 2568) ให้ปี 68 แปลงเป็น 2025
-        if (year === (now.getFullYear() % 100) || year === (now.getFullYear() % 100) + 1) {
-          // ถือว่าผู้ใช้พิมพ์ปีปัจจุบัน หรือ ปีถัดไป
-          year = year + 2000;
-        } else {
-          // Fallback to current year logic if date is far in the past/future
-          year = year + 2000;
-        }
+      } else if (year < 100) {
+        // พ.ศ. แบบย่อ เช่น 68 -> 2568 -> 2025, 69 -> 2569 -> 2026
+        const fullBuddhistYear = 2500 + year; // 68 -> 2568, 69 -> 2569
+        year = fullBuddhistYear - 543; // 2568 -> 2025, 2569 -> 2026
+        console.log(`📅 Year conversion: ${dateMatch[3]} -> พ.ศ.${fullBuddhistYear} -> ค.ศ.${year}`);
       }
 
       const parsedDate = new Date(year, month - 1, day);
