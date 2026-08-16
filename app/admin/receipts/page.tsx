@@ -150,6 +150,8 @@ export default function ReceiptsPage() {
         alert('ส่งไม่ผ่าน: ' + (err.error || 'Unknown error'));
       }
 
+    // Supabase/storage errors are not normalized by the current legacy receipt flow.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert('เกิดข้อผิดพลาด: ' + (err.message || 'Unknown error'));

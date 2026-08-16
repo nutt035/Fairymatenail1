@@ -1,276 +1,143 @@
-"use client";
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { Facebook, Calendar, Clock } from "lucide-react";
-import DateCarousel from "@/components/DateCarousel";
-import { supabase } from "@/lib/supabase";
-import { cn } from "@/lib/utils";
-import { format, getDay, addDays, isPast, isSameDay } from 'date-fns';
+'use client';
 
-type SlotStatus = "OPEN" | "FULL" | "UNAVAILABLE" | "CLOSED";
+import Image from 'next/image';
+import { useEffect, useMemo, useState } from 'react';
+import { CalendarDays, CheckCircle2, Clock3, Loader2, Sparkles } from 'lucide-react';
 
-type Slot = {
-  time: string;
-  status: SlotStatus;
-};
-
-type AvailabilityMap = Record<string, 'OPEN' | 'FULL' | 'CLOSED' | 'NONE'>;
-
+interface Service { id: string; name: string; price: number; duration_minutes: number }
+interface Slot { time: string; available: boolean }
 
 export default function BookingPage() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [date, setDate] = useState(today());
+  const [services, setServices] = useState<Service[]>([]);
+  const [serviceId, setServiceId] = useState('');
   const [slots, setSlots] = useState<Slot[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [availabilityMap, setAvailabilityMap] = useState<AvailabilityMap>({}); // NEW STATE - สำหรับ Carousel
+  const [startTime, setStartTime] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [note, setNote] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  // --- Mock Data/Helpers (ในโค้ดจริงต้องใช้ API) ---
-  const baseSlots = [
-    "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
-    "16:00", "16:30", "17:00", "17:30", "18:00", "18:30",
-    "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"
-  ];
-  const minServiceDuration = 1;
+  const service = useMemo(() => services.find((item) => item.id === serviceId), [services, serviceId]);
 
-  const timeToFloat = (t: string | null): number | null => {
-    if (!t) return null;
-    const [h, m] = t.split(":").map(Number);
-    return h + m / 60;
-  };
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setStartTime('');
+    setError('');
+    const query = new URLSearchParams({ date });
+    if (serviceId) query.set('serviceId', serviceId);
+    fetch(`/api/public/booking?${query}`)
+      .then(async (response) => {
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || 'โหลดข้อมูลไม่สำเร็จ');
+        if (!active) return;
+        setServices(payload.services || []);
+        setSlots(payload.slots || []);
+        setServiceId((current) => current || payload.services?.[0]?.id || '');
+      })
+      .catch((reason) => active && setError(reason.message))
+      .finally(() => active && setLoading(false));
+    return () => { active = false; };
+  }, [date, serviceId]);
 
-  // --- 1. Fetch สถานะว่างสำหรับ Carousel ทั้งแถบ ---
-  const fetchAllAvailability = async (daysToShow = 14) => {
-    const dates = Array.from({ length: daysToShow }, (_, i) => addDays(new Date(), i));
-    const startDate = format(dates[0], 'yyyy-MM-dd');
-    const endDate = format(dates[dates.length - 1], 'yyyy-MM-dd');
-
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    setSubmitting(true);
+    setError('');
+    setSuccess('');
     try {
-      // Fetch data from supabase (queues, store_hours)
-      const { data: queuesData } = await supabase
-        .from("queues")
-        .select("date, start_time, end_time, status")
-        .gte("date", startDate)
-        .lte("date", endDate)
-        .neq("status", "cancelled");
-
-      const { data: storeHoursData } = await supabase
-        .from("store_hours")
-        .select("*");
-
-      const newMap: AvailabilityMap = {};
-
-      for (const date of dates) {
-        const dateStr = format(date, 'yyyy-MM-dd');
-        const weekday = getDay(date);
-
-        // Check store hours (using mock logic since we don't have store_exceptions data)
-        const hour = storeHoursData?.find(h => h.weekday === weekday);
-
-        let isClosed = hour?.is_closed || false;
-        let open = timeToFloat(hour?.open_time || null);
-        let close = timeToFloat(hour?.close_time || null);
-
-        if (isClosed || !open || !close) {
-          newMap[dateStr] = 'CLOSED';
-          continue;
-        }
-
-        // Check for available slots
-        const dayBookings = queuesData?.filter(q => q.date === dateStr) || [];
-        let hasOpenSlot = false;
-
-        for (const slotTime of baseSlots) {
-          const [h, m] = slotTime.split(":").map(Number);
-          const slotStart = h + m / 60;
-          const slotEnd = slotStart + 0.5;
-
-          if (slotStart < open || slotEnd > close) continue;
-
-          const hasBooking = dayBookings.some((b) => {
-            const bStart = timeToFloat(b.start_time)!;
-            const bEnd = timeToFloat(b.end_time)!;
-            return slotStart < bEnd && slotEnd > bStart;
-          });
-
-          if (!hasBooking) {
-            hasOpenSlot = true;
-            break;
-          }
-        }
-
-        if (isPast(date) && !isSameDay(date, new Date())) {
-          newMap[dateStr] = 'NONE';
-        } else if (hasOpenSlot) {
-          newMap[dateStr] = 'OPEN';
-        } else {
-          newMap[dateStr] = 'FULL';
-        }
-      }
-
-      setAvailabilityMap(newMap);
-    } catch (error) {
-      console.error("Error fetching availability range:", error);
-    }
-  };
-
-
-  // --- 2. Fetch Slot ละเอียดสำหรับวันที่เลือก ---
-  const fetchSelectedDaySlots = async () => {
-    setIsLoading(true);
-    const dateStr = selectedDate.toISOString().split("T")[0];
-    const weekday = selectedDate.getDay();
-
-    try {
-      // Fetch actual data for the selected date here in real scenario
-      const { data: bookings } = await supabase
-        .from("queues")
-        .select("start_time, end_time, status")
-        .eq("date", dateStr)
-        .neq("status", "cancelled");
-
-      const { data: hour } = await supabase
-        .from("store_hours")
-        .select("*")
-        .eq("weekday", weekday)
-        .maybeSingle();
-
-      const open = timeToFloat(hour?.open_time || null);
-      const close = timeToFloat(hour?.close_time || null);
-      const isClosed = hour?.is_closed || false;
-
-
-      const updatedSlots: Slot[] = baseSlots.map((slotTime) => {
-        const [h, m] = slotTime.split(":").map(Number);
-        const slotStart = h + m / 60;
-        const slotEnd = slotStart + 0.5;
-
-        if (isClosed) return { time: slotTime, status: "CLOSED" };
-        if (open === null || close === null) return { time: slotTime, status: "UNAVAILABLE" };
-
-        if (slotStart < open || slotEnd > close) return { time: slotTime, status: "UNAVAILABLE" };
-
-        const hasBooking = bookings?.some((b) => {
-          const bStart = timeToFloat(b.start_time)!;
-          const bEnd = timeToFloat(b.end_time)!;
-          return slotStart < bEnd && slotEnd > bStart;
-        });
-
-        if (hasBooking) return { time: slotTime, status: "FULL" };
-
-        return { time: slotTime, status: "OPEN" };
+      const response = await fetch('/api/public/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerName, customerPhone, date, startTime, serviceId, note }),
       });
-
-      setSlots(updatedSlots);
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'จองคิวไม่สำเร็จ');
+      setSuccess(`จองคิววันที่ ${date} เวลา ${startTime} สำเร็จแล้ว`);
+      setCustomerName('');
+      setCustomerPhone('');
+      setNote('');
+      setStartTime('');
+      const refreshed = await fetch(`/api/public/booking?${new URLSearchParams({ date, serviceId })}`).then((res) => res.json());
+      setSlots(refreshed.slots || []);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'จองคิวไม่สำเร็จ');
     } finally {
-      setIsLoading(false);
+      setSubmitting(false);
     }
-  };
-
-
-  useEffect(() => {
-    fetchAllAvailability();
-  }, []);
-
-  useEffect(() => {
-    fetchSelectedDaySlots();
-  }, [selectedDate]);
-
-
-  // Helper for status badge for the selected day itself
-  const selectedDayStatus = availabilityMap[format(selectedDate, 'yyyy-MM-dd')] || 'NONE';
-  let statusColor = "text-slate-500";
-  if (selectedDayStatus === 'OPEN') statusColor = "text-emerald-500";
-  if (selectedDayStatus === 'FULL' || selectedDayStatus === 'CLOSED') statusColor = "text-pink-500";
-
+  }
 
   return (
-    <div className="min-h-screen bg-[#FFF0F7] w-full max-w-[100vw] overflow-x-hidden">
-      {/* HEADER (เหมือนเดิม) */}
-      <header className="bg-white px-6 py-4 flex justify-center items-center shadow-sm sticky top-0 z-50">
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 rounded-full overflow-hidden border border-pink-200 mb-1 relative">
-            <Image src="/logo.jpg" alt="Logo" fill className="object-cover" />
+    <main className="min-h-screen bg-gradient-to-b from-[#fff4f8] to-white px-4 py-8 text-slate-800">
+      <div className="mx-auto max-w-lg">
+        <header className="mb-6 flex flex-col items-center text-center">
+          <div className="relative mb-3 h-20 w-20 overflow-hidden rounded-full border-4 border-white shadow-lg">
+            <Image src="/logo.jpg" alt="Fairymate Nail" fill className="object-cover" priority />
           </div>
-          <h1 className="font-bold text-lg text-primary tracking-tight">Fairymate.Nail</h1>
-        </div>
-      </header>
+          <h1 className="text-2xl font-black text-pink-600">Fairymate.Nail</h1>
+          <p className="mt-1 text-sm text-slate-500">เลือกบริการและเวลาที่สะดวกได้เลยค่ะ</p>
+        </header>
 
-      {/* CONTENT */}
-      <main className="max-w-md mx-auto p-6 space-y-6 pb-40">
-
-        {/* Intro */}
-        <div className="bg-white/80 rounded-3xl p-6 text-center shadow-sm">
-          <h2 className="text-xl font-bold text-slate-800 mb-2">จองคิวง่ายๆ แค่ 2 ขั้นตอน</h2>
-          <p className="text-slate-500 text-sm">เลือกวันว่าง แล้วเลือกเวลาที่ต้องการ 💅</p>
-        </div>
-
-        {/* Date Selector Area (Simple and Clear) */}
-        <div className="bg-white rounded-3xl p-4 shadow-soft">
-          <h3 className="font-bold text-slate-800 mb-4 text-lg flex items-center gap-2">
-            <Calendar size={20} className="text-primary" /> 1. เลือกวันว่าง
-          </h3>
-          <DateCarousel
-            selectedDate={selectedDate}
-            onDateSelect={setSelectedDate}
-            availabilityMap={availabilityMap} // <-- ส่งสถานะไปให้ Carousel จัดการ
-          />
-          {/* Status Indicator for selected date */}
-          <div className={cn("mt-4 text-center font-bold text-sm", statusColor)}>
-            {selectedDayStatus === 'OPEN' && <span>✅ วันที่ {format(selectedDate, 'd MMM')} ยังมีคิวว่าง</span>}
-            {selectedDayStatus === 'FULL' && <span>❌ วันที่ {format(selectedDate, 'd MMM')} คิวเต็มแล้ว</span>}
-            {selectedDayStatus === 'CLOSED' && <span>🚫 วันที่ {format(selectedDate, 'd MMM')} ปิดร้าน</span>}
-            {(selectedDayStatus === 'NONE' || (isPast(selectedDate) && !isSameDay(selectedDate, new Date()))) && <span>👆 เลือกวันอื่นที่มีสีเขียวค่ะ</span>}
-          </div>
-        </div>
-
-        {/* SLOT BLOCKS */}
-        <div className="bg-white rounded-3xl p-6 shadow-soft">
-          <h3 className="font-bold text-slate-800 mb-4 text-lg flex items-center gap-2">
-            <Clock size={20} className="text-primary" /> 2. เลือกเวลา
-          </h3>
-
-          {isLoading ? (
-            <p className="text-center text-slate-400 py-4 text-sm">กำลังโหลด...</p>
-          ) : (
-            <div className="grid grid-cols-3 gap-3">
-              {slots.map((slot) => (
-                <button
-                  key={slot.time}
-                  disabled={slot.status !== 'OPEN'}
-                  className={cn(
-                    "rounded-xl py-3 flex flex-col items-center text-sm font-semibold transition-all active:scale-95",
-                    slot.status === "OPEN"
-                      ? "bg-emerald-100 text-emerald-600 border border-emerald-300 hover:bg-emerald-200"
-                      : slot.status === "FULL"
-                        ? "bg-pink-100 text-pink-600 border border-pink-300 opacity-80 cursor-not-allowed"
-                        : slot.status === "CLOSED"
-                          ? "bg-slate-200 text-slate-400 border border-slate-300 opacity-60 cursor-not-allowed"
-                          : "bg-slate-100 text-slate-400 border border-slate-200 opacity-60 cursor-not-allowed"
-                  )}
-                >
-                  <span className="text-base font-bold">{slot.time}</span>
-                  <span className="text-[10px] mt-1">
-                    {slot.status === "OPEN" ? "ว่าง!" : slot.status === "FULL" ? "เต็ม" : slot.status === "CLOSED" ? "ปิดร้าน" : "ไม่ว่าง"}
-                  </span>
-                </button>
+        <form onSubmit={submit} className="space-y-5 rounded-3xl bg-white p-5 shadow-xl shadow-pink-100/60 sm:p-7">
+          <Section title="1. เลือกบริการ" icon={<Sparkles size={19} />}>
+            <select value={serviceId} onChange={(e) => setServiceId(e.target.value)} required className="field">
+              {services.map((item) => (
+                <option key={item.id} value={item.id}>{item.name} — ฿{Number(item.price).toLocaleString('th-TH')} ({item.duration_minutes} นาที)</option>
               ))}
-            </div>
-          )}
-        </div>
-      </main>
+            </select>
+          </Section>
 
-      {/* CTA (เหมือนเดิม) */}
-      <div className="fixed bottom-0 left-0 w-full p-4 bg-white border-t border-slate-100 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)] z-50">
-        <div className="max-w-md mx-auto">
-          <a
-            href="https://www.facebook.com/messages/t/583498464852057"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center justify-center gap-3 w-full bg-[#1877F2] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#166fe5] transition"
-          >
-            <Facebook className="fill-white" /> ทักแชทเพื่อจองคิว
-          </a>
-        </div>
+          <Section title="2. เลือกวันที่" icon={<CalendarDays size={19} />}>
+            <input type="date" min={today()} value={date} onChange={(e) => setDate(e.target.value)} required className="field" />
+          </Section>
+
+          <Section title="3. เลือกเวลา" icon={<Clock3 size={19} />}>
+            {loading ? <div className="flex justify-center py-5"><Loader2 className="animate-spin text-pink-500" /></div> : (
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                {slots.map((slot) => (
+                  <button key={slot.time} type="button" disabled={!slot.available}
+                    onClick={() => setStartTime(slot.time)}
+                    className={`rounded-xl border px-2 py-3 text-sm font-bold transition ${startTime === slot.time ? 'border-pink-500 bg-pink-500 text-white' : slot.available ? 'border-pink-200 bg-pink-50 text-pink-700 hover:border-pink-400' : 'cursor-not-allowed border-slate-100 bg-slate-100 text-slate-300 line-through'}`}>
+                    {slot.time}
+                  </button>
+                ))}
+                {!slots.length && <p className="col-span-full py-3 text-center text-sm text-slate-400">วันนี้ร้านปิดหรือไม่มีคิวว่าง</p>}
+              </div>
+            )}
+            {service && <p className="mt-2 text-xs text-slate-400">บริการนี้ใช้เวลาประมาณ {service.duration_minutes} นาที ระบบจะตรวจเวลาว่างอีกครั้งก่อนยืนยัน</p>}
+          </Section>
+
+          <Section title="4. ข้อมูลผู้จอง" icon={<CheckCircle2 size={19} />}>
+            <div className="space-y-3">
+              <input value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="ชื่อผู้จอง" maxLength={100} required className="field" />
+              <input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="เบอร์โทร เช่น 0812345678" inputMode="tel" maxLength={20} required className="field" />
+              <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="รายละเอียดเพิ่มเติม (ถ้ามี)" maxLength={300} rows={3} className="field resize-none" />
+            </div>
+          </Section>
+
+          {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm font-medium text-red-600">{error}</p>}
+          {success && <p role="status" className="rounded-xl bg-emerald-50 p-3 text-sm font-medium text-emerald-700">{success}</p>}
+
+          <button type="submit" disabled={submitting || !startTime || !serviceId}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-pink-500 py-4 text-lg font-black text-white shadow-lg shadow-pink-200 transition hover:bg-pink-600 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none">
+            {submitting && <Loader2 size={20} className="animate-spin" />}
+            {submitting ? 'กำลังจอง...' : 'ยืนยันการจองคิว'}
+          </button>
+        </form>
       </div>
-    </div>
+      <style jsx>{` .field { width: 100%; border-radius: 0.75rem; border: 1px solid #e2e8f0; background: #f8fafc; padding: 0.75rem 1rem; outline: none; } .field:focus { border-color: #ec4899; box-shadow: 0 0 0 3px rgb(236 72 153 / .12); background: white; } `}</style>
+    </main>
   );
+}
+
+function Section({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
+  return <section><h2 className="mb-3 flex items-center gap-2 font-bold text-slate-700"><span className="text-pink-500">{icon}</span>{title}</h2>{children}</section>;
+}
+
+function today() {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok' }).format(new Date());
 }

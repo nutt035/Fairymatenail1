@@ -63,7 +63,7 @@ export default function SmartLazyBooking() {
     const data = parseInput(inputText);
     if (data.description) {
       const newQueue: QueueItem = {
-        id: Date.now(),
+        id: queues.reduce((max, item) => Math.max(max, item.id), 0) + 1,
         ...data,
         status: 'pending',
         isExpanded: false

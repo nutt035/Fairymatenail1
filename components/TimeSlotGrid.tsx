@@ -7,7 +7,7 @@ interface TimeSlotProps {
   selected?: boolean;
 }
 
-export default function TimeSlotGrid({ slots, onSelect, selectedTime }: { slots: any[], onSelect: (time: string) => void, selectedTime: string | null }) {
+export default function TimeSlotGrid({ slots, onSelect, selectedTime }: { slots: TimeSlotProps[], onSelect: (time: string) => void, selectedTime: string | null }) {
   return (
     <div className="grid grid-cols-3 gap-3">
       {slots.map((slot, idx) => (

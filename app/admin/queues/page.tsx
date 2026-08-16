@@ -120,7 +120,7 @@ export default function QueueManagement() {
     e.preventDefault();
     if (!inputText.trim()) return;
 
-    let text = inputText.trim();
+    const text = inputText.trim();
     const now = new Date();
     let targetDate = format(now, 'yyyy-MM-dd');
     let startTime = '';
@@ -136,8 +136,8 @@ export default function QueueManagement() {
     const thaiDateRegex = /^(\d{1,2})[/\.](\d{1,2})[/\.](\d{2,4})\s+/;
     const dateMatch = processText.match(thaiDateRegex);
     if (dateMatch) {
-      let day = parseInt(dateMatch[1]);
-      let month = parseInt(dateMatch[2]);
+      const day = parseInt(dateMatch[1]);
+      const month = parseInt(dateMatch[2]);
       let year = parseInt(dateMatch[3]);
 
       // แปลงปี พ.ศ. เป็น ค.ศ.
@@ -593,7 +593,7 @@ export default function QueueManagement() {
         ) : (
           Object.keys(groupedQueues).map((dateStr) => {
             const dateObj = parseISO(dateStr);
-            let dateLabel = format(dateObj, 'EEEE d MMM', { locale: th });
+            const dateLabel = format(dateObj, 'EEEE d MMM', { locale: th });
             const isTodayDate = isToday(dateObj);
 
             return (

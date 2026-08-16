@@ -27,9 +27,17 @@ type StoreHour = {
   is_closed: boolean;
 };
 
+type DashboardQueue = {
+  id: string;
+  customer_name: string;
+  service_name: string;
+  start_time: string;
+  status: 'pending' | 'in_progress' | 'finished' | 'cancelled';
+};
+
 export default function Dashboard() {
   // Queue + Income States
-  const [queues, setQueues] = useState<any[]>([]);
+  const [queues, setQueues] = useState<DashboardQueue[]>([]);
   const [todayIncome, setTodayIncome] = useState(0);
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [goalAmount, setGoalAmount] = useState(150000);
